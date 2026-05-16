@@ -1,0 +1,90 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: white;
+  color: #222;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 24px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+.topbar img { height: 40px; width: auto; }
+.topbar a {
+  text-decoration: none;
+  color: #222;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.topbar a:hover, .topbar a.active { background: #ddd; }
+
+.content { padding: 24px; max-width: 900px; }
+.content h1 { margin-bottom: 16px; }
+
+.btn {
+  display: inline-block;
+  padding: 10px 22px;
+  background: #222;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+.btn:hover { background: #444; }
+
+.topic-table { width: 100%; border-collapse: collapse; }
+.topic-table th, .topic-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+.topic-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+.topic-table a { color: #222; text-decoration: none; font-weight: 500; }
+.topic-table a:hover { text-decoration: underline; }
+
+.meta { color: #888; font-size: 0.85rem; margin-bottom: 16px; }
+
+.reply {
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+.reply p { margin-top: 8px; }
+
+.reply-form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+}
+.reply-form input, .reply-form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+.reply-form textarea { min-height: 120px; resize: vertical; }
+.reply-form button {
+  padding: 10px 22px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  width: fit-content;
+}
+.reply-form button:hover { background: #444; }
