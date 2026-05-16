@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="index.php">Forum</a>
     <a href="announcements.php">Announcements</a>
     <span class="spacer"></span>
-    <span class="user-badge"><?= htmlspecialchars(currentUser()) ?></span>
+    <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
     <a href="logout.php" class="auth-link">Logout</a>
   </div>
 

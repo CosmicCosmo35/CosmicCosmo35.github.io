@@ -15,7 +15,7 @@
     <a href="announcements.php" class="active">Announcements</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
-      <span class="user-badge"><?= htmlspecialchars(currentUser()) ?></span>
+      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
       <a href="logout.php" class="auth-link">Logout</a>
     <?php else: ?>
       <a href="login.php" class="auth-link">Login</a>
