@@ -5,13 +5,15 @@ $topic = $db->querySingle("SELECT * FROM topics WHERE id = $id", true);
 if (!$topic) { header('Location: index.php'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
-  $author = trim($_POST['author']) ?: 'Anonymous';
+  $author = isLoggedIn() ? currentUser() : (trim($_POST['author']) ?: 'Anonymous');
   $body = trim($_POST['body']);
-  if ($body) {
-    $stmt = $db->prepare("INSERT INTO replies (topic_id, author, body) VALUES (?, ?, ?)");
+  $userId = currentUserId();
+  if ($body && strlen($body) <= MAX_REPLY_LENGTH) {
+    $stmt = $db->prepare("INSERT INTO replies (topic_id, author, user_id, body) VALUES (?, ?, ?, ?)");
     $stmt->bindValue(1, $id, SQLITE3_INTEGER);
     $stmt->bindValue(2, $author, SQLITE3_TEXT);
-    $stmt->bindValue(3, $body, SQLITE3_TEXT);
+    $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
+    $stmt->bindValue(4, $body, SQLITE3_TEXT);
     $stmt->execute();
     header("Location: topic.php?id=$id");
     exit;
@@ -32,6 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
     <a href="#">Announcements</a>
+    <span class="spacer"></span>
+    <?php if (isLoggedIn()): ?>
+      <span class="user-badge"><?= htmlspecialchars(currentUser()) ?></span>
+      <a href="logout.php" class="auth-link">Logout</a>
+    <?php else: ?>
+      <a href="login.php" class="auth-link">Login</a>
+      <a href="register.php" class="auth-link">Register</a>
+    <?php endif; ?>
   </div>
 
   <div class="content">
@@ -59,10 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
 
     <form method="post" class="reply-form">
       <h3>Post a reply</h3>
-      <input type="text" name="author" placeholder="Your name (optional)">
-      <textarea name="body" placeholder="Write your reply..." required></textarea>
+      <?php if (!isLoggedIn()): ?>
+        <input type="text" name="author" placeholder="Your name (optional)">
+      <?php endif; ?>
+      <textarea name="body" placeholder="Write your reply... (max <?= MAX_REPLY_LENGTH ?> characters)" required maxlength="<?= MAX_REPLY_LENGTH ?>"></textarea>
+      <span class="char-count">0 / <?= MAX_REPLY_LENGTH ?></span>
       <button type="submit">Post Reply</button>
     </form>
   </div>
+  <script src="char-count.js"></script>
 </body>
 </html>

@@ -2,19 +2,22 @@
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title'] ?? '');
-  $author = trim($_POST['author']) ?: 'Anonymous';
+  $author = isLoggedIn() ? currentUser() : (trim($_POST['author']) ?: 'Anonymous');
   $body = trim($_POST['body'] ?? '');
-  if ($title && $body) {
-    $stmt = $db->prepare("INSERT INTO topics (title, author) VALUES (?, ?)");
+  $userId = currentUserId();
+  if ($title && $body && strlen($title) <= MAX_TITLE_LENGTH && strlen($body) <= MAX_BODY_LENGTH) {
+    $stmt = $db->prepare("INSERT INTO topics (title, author, user_id) VALUES (?, ?, ?)");
     $stmt->bindValue(1, $title, SQLITE3_TEXT);
     $stmt->bindValue(2, $author, SQLITE3_TEXT);
+    $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
     $stmt->execute();
     $topicId = $db->lastInsertRowID();
 
-    $stmt = $db->prepare("INSERT INTO replies (topic_id, author, body) VALUES (?, ?, ?)");
+    $stmt = $db->prepare("INSERT INTO replies (topic_id, author, user_id, body) VALUES (?, ?, ?, ?)");
     $stmt->bindValue(1, $topicId, SQLITE3_INTEGER);
     $stmt->bindValue(2, $author, SQLITE3_TEXT);
-    $stmt->bindValue(3, $body, SQLITE3_TEXT);
+    $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
+    $stmt->bindValue(4, $body, SQLITE3_TEXT);
     $stmt->execute();
 
     header("Location: topic.php?id=$topicId");
@@ -36,6 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
     <a href="#">Announcements</a>
+    <span class="spacer"></span>
+    <?php if (isLoggedIn()): ?>
+      <span class="user-badge"><?= htmlspecialchars(currentUser()) ?></span>
+      <a href="logout.php" class="auth-link">Logout</a>
+    <?php else: ?>
+      <a href="login.php" class="auth-link">Login</a>
+      <a href="register.php" class="auth-link">Register</a>
+    <?php endif; ?>
   </div>
 
   <div class="content">
@@ -43,11 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>Create New Topic</h1>
 
     <form method="post" class="reply-form">
-      <input type="text" name="author" placeholder="Your name (optional)">
-      <input type="text" name="title" placeholder="Topic title" required>
-      <textarea name="body" placeholder="Write your post..." required></textarea>
+      <?php if (!isLoggedIn()): ?>
+        <input type="text" name="author" placeholder="Your name (optional)">
+      <?php endif; ?>
+      <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
+      <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
+      <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
       <button type="submit">Create Topic</button>
     </form>
   </div>
+  <script src="char-count.js"></script>
 </body>
 </html>

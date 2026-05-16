@@ -23,6 +23,15 @@ body {
   transition: background 0.2s;
 }
 .topbar a:hover, .topbar a.active { background: #ddd; }
+.spacer { flex: 1; }
+.auth-link { font-size: 0.9rem !important; }
+.user-badge {
+  font-size: 0.9rem;
+  color: #555;
+  padding: 4px 10px;
+  background: #e8e8e8;
+  border-radius: 4px;
+}
 
 .content { padding: 24px; max-width: 900px; }
 .content h1 { margin-bottom: 16px; }
@@ -88,3 +97,40 @@ body {
   width: fit-content;
 }
 .reply-form button:hover { background: #444; }
+
+.char-count {
+  font-size: 0.8rem;
+  color: #888;
+  text-align: right;
+}
+.char-count.over { color: #d33; }
+
+.auth-page { max-width: 400px; }
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.auth-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.auth-form button {
+  padding: 10px;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.auth-form button:hover { background: #444; }
+.auth-switch { margin-top: 16px; font-size: 0.9rem; }
+.auth-switch a { color: #222; }
+.error {
+  color: #d33;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}

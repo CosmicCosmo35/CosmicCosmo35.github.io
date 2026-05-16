@@ -13,6 +13,14 @@
     <a href="../index.html">Home</a>
     <a href="index.php" class="active">Forum</a>
     <a href="#">Announcements</a>
+    <span class="spacer"></span>
+    <?php if (isLoggedIn()): ?>
+      <span class="user-badge"><?= htmlspecialchars(currentUser()) ?></span>
+      <a href="logout.php" class="auth-link">Logout</a>
+    <?php else: ?>
+      <a href="login.php" class="auth-link">Login</a>
+      <a href="register.php" class="auth-link">Register</a>
+    <?php endif; ?>
   </div>
 
   <div class="content">
@@ -32,9 +40,6 @@
         <td><?= $row['created_at'] ?></td>
       </tr>
       <?php endwhile; ?>
-      <?php if ($result->numColumns() && !$result->fetchArray() && !$result->numColumns()): ?>
-      <tr><td colspan="4">No topics yet. Be the first!</td></tr>
-      <?php endif; ?>
     </table>
   </div>
 </body>
