@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
-    <a href="#">Announcements</a>
+    <a href="announcements.php">Announcements</a>
     <span class="spacer"></span>
     <a href="login.php" class="auth-link">Login</a>
     <a href="register.php" class="auth-link active">Register</a>

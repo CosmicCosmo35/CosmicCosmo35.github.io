@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
-    <a href="#">Announcements</a>
+    <a href="announcements.php">Announcements</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
       <span class="user-badge"><?= htmlspecialchars(currentUser()) ?></span>
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
   <div class="content">
     <a href="index.php">&larr; Back to Forum</a>
     <h1><?= htmlspecialchars($topic['title']) ?></h1>
-    <p class="meta">by <?= htmlspecialchars($topic['author']) ?> &middot; <?= $topic['created_at'] ?></p>
+    <p class="meta">by <?= htmlspecialchars($topic['author']) ?> &middot; <?= formatDate($topic['created_at']) ?></p>
 
     <div class="replies">
       <?php
@@ -59,8 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       ?>
       <div class="reply">
         <strong><?= htmlspecialchars($reply['author']) ?></strong>
-        <span class="meta"><?= $reply['created_at'] ?></span>
-        <p><?= nl2br(htmlspecialchars($reply['body'])) ?></p>
+        <span class="meta"><?= formatDate($reply['created_at']) ?></span>
+        <div class="reply-body"><?= renderMarkdown($reply['body']) ?></div>
       </div>
       <?php endwhile; ?>
       <?php if (!$hasReplies): ?>

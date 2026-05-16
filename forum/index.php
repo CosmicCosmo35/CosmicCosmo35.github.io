@@ -12,7 +12,7 @@
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="index.php" class="active">Forum</a>
-    <a href="#">Announcements</a>
+    <a href="announcements.php">Announcements</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
       <span class="user-badge"><?= htmlspecialchars(currentUser()) ?></span>
@@ -37,7 +37,7 @@
         <td><a href="topic.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></td>
         <td><?= htmlspecialchars($row['author']) ?></td>
         <td><?= $row['reply_count'] ?></td>
-        <td><?= $row['created_at'] ?></td>
+        <td><?= formatDate($row['created_at']) ?></td>
       </tr>
       <?php endwhile; ?>
     </table>
