@@ -39,7 +39,7 @@
     ?>
     <div class="announcement-preview">
       <h2><a href="announcement.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
-      <p class="meta">by <?= htmlspecialchars($row['author']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?>/<?= MAX_ANNOUNCEMENT_REPLIES ?> replies</p>
+      <p class="meta">by <?= htmlspecialchars($row['author']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?> replies</p>
       <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 200)) ?></div>
     </div>
     <?php

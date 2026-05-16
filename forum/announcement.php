@@ -5,11 +5,12 @@ $announcement = $db->querySingle("SELECT * FROM announcements WHERE id = $id", t
 if (!$announcement) { header('Location: announcements.php'); exit; }
 
 $replyCount = $db->querySingle("SELECT COUNT(*) FROM announcement_replies WHERE announcement_id = $id");
+$myReplyCount = isLoggedIn() ? $db->querySingle("SELECT COUNT(*) FROM announcement_replies WHERE announcement_id = $id AND user_id = " . currentUserId()) : 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
   if (!isLoggedIn()) { header('Location: login.php'); exit; }
-  if ($replyCount >= MAX_ANNOUNCEMENT_REPLIES) {
-    $error = 'This announcement has reached the maximum of ' . MAX_ANNOUNCEMENT_REPLIES . ' replies.';
+  if ($myReplyCount >= MAX_ANNOUNCEMENT_REPLIES) {
+    $error = 'You have reached the maximum of ' . MAX_ANNOUNCEMENT_REPLIES . ' replies per announcement.';
   } else {
     $author = currentUser();
     $body = trim($_POST['body']);
@@ -57,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <p class="meta">by <?= htmlspecialchars($announcement['author']) ?> &middot; <?= formatDate($announcement['created_at']) ?></p>
     <div class="body"><?= renderMarkdown($announcement['body']) ?></div>
 
-    <h2 class="reply-heading">Replies (<?= $replyCount ?>/<?= MAX_ANNOUNCEMENT_REPLIES ?>)</h2>
+    <h2 class="reply-heading">Replies (<?= $replyCount ?>)</h2>
     <div class="replies">
       <?php
       $replies = $db->query("SELECT * FROM announcement_replies WHERE announcement_id = $id ORDER BY created_at ASC");
@@ -76,19 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       <?php endif; ?>
     </div>
 
-    <?php if ($replyCount < MAX_ANNOUNCEMENT_REPLIES): ?>
-      <?php if (isLoggedIn()): ?>
+    <?php if (isLoggedIn()): ?>
+      <?php if ($myReplyCount < MAX_ANNOUNCEMENT_REPLIES): ?>
       <form method="post" class="reply-form">
-        <h3>Post a reply</h3>
+        <h3>Post a reply (<?= $myReplyCount ?>/<?= MAX_ANNOUNCEMENT_REPLIES ?> used)</h3>
         <textarea name="body" placeholder="Write your reply... (max <?= MAX_REPLY_LENGTH ?> characters)" required maxlength="<?= MAX_REPLY_LENGTH ?>"></textarea>
         <span class="char-count">0 / <?= MAX_REPLY_LENGTH ?></span>
         <button type="submit">Post Reply</button>
       </form>
       <?php else: ?>
-      <p class="login-prompt"><a href="login.php">Login</a> to post a reply.</p>
+      <p class="login-prompt">You've used all <?= MAX_ANNOUNCEMENT_REPLIES ?> of your replies on this announcement.</p>
       <?php endif; ?>
     <?php else: ?>
-      <p class="login-prompt">Reply limit reached for this announcement.</p>
+      <p class="login-prompt"><a href="login.php">Login</a> to post a reply.</p>
     <?php endif; ?>
   </div>
   <script src="char-count.js"></script>
