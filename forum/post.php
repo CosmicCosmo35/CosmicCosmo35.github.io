@@ -1,11 +1,12 @@
 <?php require __DIR__ . '/db.php';
 
+if (!isLoggedIn()) { header('Location: login.php'); exit; }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title'] ?? '');
-  $author = isLoggedIn() ? currentUser() : (trim($_POST['author']) ?: 'Anonymous');
+  $author = currentUser();
   $body = trim($_POST['body'] ?? '');
   $userId = currentUserId();
-  if (strlen($author) > MAX_USERNAME_LENGTH) $author = substr($author, 0, MAX_USERNAME_LENGTH);
   if ($title && $body && strlen($title) <= MAX_TITLE_LENGTH && strlen($body) <= MAX_BODY_LENGTH) {
     $stmt = $db->prepare("INSERT INTO topics (title, author, user_id) VALUES (?, ?, ?)");
     $stmt->bindValue(1, $title, SQLITE3_TEXT);
@@ -55,9 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>Create New Topic</h1>
 
     <form method="post" class="reply-form">
-      <?php if (!isLoggedIn()): ?>
-        <input type="text" name="author" placeholder="Your name (optional)" maxlength="<?= MAX_USERNAME_LENGTH ?>">
-      <?php endif; ?>
       <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
       <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
