@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Awesome Science</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: white;
+      color: #222;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 24px;
+      background: #f5f5f5;
+      border-bottom: 1px solid #ddd;
+    }
+    .topbar img {
+      height: 40px;
+      width: auto;
+    }
+    .topbar a {
+      text-decoration: none;
+      color: #222;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .topbar a:hover {
+      background: #ddd;
+    }
+    .content {
+      padding: 24px;
+    }
+    .title {
+      transform: rotate(-3deg);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 40px;
+      margin-top: 16px;
+    }
+    .old-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .old-nav a {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #e0e0e0;
+      color: #222;
+      text-decoration: none;
+      font-size: 1.1rem;
+      border-radius: 6px;
+      width: fit-content;
+      transition: background 0.2s;
+    }
+    .old-nav a:hover {
+      background: #ccc;
+    }
+    .portal-text {
+      font-size: 1.1rem;
+      color: #444;
+      margin-bottom: 12px;
+    }
+    .embed {
+      width: 640px;
+      max-width: 100%;
+      height: 480px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <img src="Logo.png" alt="Logo">
+    <a href="index.html">Home</a>
+    <a href="#">Forum</a>
+    <a href="#">Announcements</a>
+  </div>
+
+  <div class="content">
+    <div class="title">Welcome to Awesome Science!</div>
+
+    <p class="portal-text">go check out portal 1/2. very awesome games</p>
+
+    <iframe class="embed" src="https://store.steampowered.com/app/620/Portal_2/" allowfullscreen></iframe>
+  </div>
+</body>
+</html>
