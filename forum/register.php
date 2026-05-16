@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($existing->execute()->fetchArray()) {
       $error = 'Username already taken.';
     } else {
+      sleep(POST_DELAY);
       $stmt = $db->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
       $stmt->bindValue(1, $username, SQLITE3_TEXT);
       $stmt->bindValue(2, password_hash($password, PASSWORD_DEFAULT), SQLITE3_TEXT);
@@ -48,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
+    <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php">Announcements</a>
     <span class="spacer"></span>
     <a href="login.php" class="auth-link">Login</a>

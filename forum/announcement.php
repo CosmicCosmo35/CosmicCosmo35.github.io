@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     $body = trim($_POST['body']);
     $userId = currentUserId();
     if ($body && strlen($body) <= MAX_REPLY_LENGTH) {
+      sleep(POST_DELAY);
       $stmt = $db->prepare("INSERT INTO announcement_replies (announcement_id, author, user_id, body) VALUES (?, ?, ?, ?)");
       $stmt->bindValue(1, $id, SQLITE3_INTEGER);
       $stmt->bindValue(2, $author, SQLITE3_TEXT);
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
+    <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php" class="active">Announcements</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
@@ -55,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
   <div class="content">
     <a href="announcements.php">&larr; Back to Announcements</a>
     <h1><?= htmlspecialchars($announcement['title']) ?></h1>
-    <p class="meta">by <?= htmlspecialchars($announcement['author']) ?> &middot; <?= formatDate($announcement['created_at']) ?></p>
+    <p class="meta">by <?= authorLink($announcement['author'], $announcement['user_id']) ?> &middot; <?= formatDate($announcement['created_at']) ?></p>
     <div class="body"><?= renderMarkdown($announcement['body']) ?></div>
 
     <h2 class="reply-heading">Replies (<?= $replyCount ?>)</h2>
@@ -67,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
         $hasReplies = true;
       ?>
       <div class="reply">
-        <strong><?= htmlspecialchars($reply['author']) ?></strong>
+        <strong><?= authorLink($reply['author'], $reply['user_id']) ?></strong>
         <span class="meta"><?= formatDate($reply['created_at']) ?></span>
         <div class="reply-body"><?= renderMarkdown($reply['body']) ?></div>
       </div>
@@ -83,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
         <h3>Post a reply (<?= $myReplyCount ?>/<?= MAX_ANNOUNCEMENT_REPLIES ?> used)</h3>
         <textarea name="body" placeholder="Write your reply... (max <?= MAX_REPLY_LENGTH ?> characters)" required maxlength="<?= MAX_REPLY_LENGTH ?>"></textarea>
         <span class="char-count">0 / <?= MAX_REPLY_LENGTH ?></span>
+        <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>
         <button type="submit">Post Reply</button>
       </form>
       <?php else: ?>

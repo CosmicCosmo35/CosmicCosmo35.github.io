@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $body = trim($_POST['body'] ?? '');
   $userId = currentUserId();
   if ($title && $body && strlen($title) <= MAX_TITLE_LENGTH && strlen($body) <= MAX_BODY_LENGTH) {
+    sleep(POST_DELAY);
     $stmt = $db->prepare("INSERT INTO topics (title, author, user_id) VALUES (?, ?, ?)");
     $stmt->bindValue(1, $title, SQLITE3_TEXT);
     $stmt->bindValue(2, $author, SQLITE3_TEXT);
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
+    <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php">Announcements</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
@@ -59,6 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
       <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
+      <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>
       <button type="submit">Create Topic</button>
     </form>
   </div>

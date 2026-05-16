@@ -204,3 +204,37 @@ a.user-badge:hover { background: #ddd; }
 .body h1, .body h2, .body h3 { margin-top: 16px; }
 
 .reply-heading { margin-top: 32px; margin-bottom: 12px; }
+
+.profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.profile-avatar img, .avatar-placeholder {
+  width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
+}
+.avatar-placeholder {
+  background: #222; color: white; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 2rem; font-weight: 700;
+}
+.avatar-form { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.avatar-form button {
+  padding: 8px 16px; background: #222; color: white;
+  border: none; border-radius: 4px; cursor: pointer;
+}
+.avatar-form button:hover { background: #444; }
+
+.file-label { font-size: 0.9rem; color: #555; }
+.file-label input { font-size: 0.9rem; }
+
+.science-card {
+  display: flex; gap: 16px; padding: 16px;
+  border: 1px solid #eee; border-radius: 6px; margin-bottom: 12px;
+}
+.science-thumb {
+  width: 120px; height: 90px; object-fit: cover;
+  border-radius: 4px; flex-shrink: 0;
+}
+.science-info { flex: 1; }
+.science-info h2 { margin-bottom: 4px; font-size: 1.2rem; }
+.science-info h2 a { color: #222; text-decoration: none; }
+.science-info h2 a:hover { text-decoration: underline; }
+.science-image { margin: 16px 0; }
+.science-image img { max-width: 100%; border-radius: 6px; }

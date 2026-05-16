@@ -7,6 +7,7 @@ $db->exec("CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
+  avatar TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )");
 
@@ -51,11 +52,27 @@ $db->exec("CREATE TABLE IF NOT EXISTS announcement_replies (
   FOREIGN KEY (user_id) REFERENCES users(id)
 )");
 
+$db->exec("CREATE TABLE IF NOT EXISTS science_posts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  author TEXT NOT NULL DEFAULT 'Anonymous',
+  user_id INTEGER,
+  body TEXT NOT NULL,
+  image_path TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+)");
+
 define('MAX_BODY_LENGTH', 500);
 define('MAX_REPLY_LENGTH', 300);
 define('MAX_TITLE_LENGTH', 60);
 define('MAX_USERNAME_LENGTH', 15);
 define('MAX_ANNOUNCEMENT_REPLIES', 2);
+define('UPLOAD_DIR', __DIR__ . '/uploads');
+define('AVATAR_DIR', UPLOAD_DIR . '/avatars');
+define('PROJECT_DIR', UPLOAD_DIR . '/projects');
+define('MAX_FILE_SIZE', 5 * 1024 * 1024);
+define('POST_DELAY', 10);
 
 function isLoggedIn() {
   return isset($_SESSION['user_id']);
@@ -70,7 +87,7 @@ function currentUserId() {
 }
 
 function isAdmin() {
-  return isset($_SESSION['user_id']) && $_SESSION['user_id'] === 1;
+  return isLoggedIn() && strtolower($_SESSION['username']) === 'cosmo';
 }
 
 function formatDate($datetime) {
@@ -118,3 +135,40 @@ function renderMarkdown($text) {
   if ($inOl) $result[] = '</ol>';
   return implode("\n", $result);
 }
+
+function authorLink($author, $userId) {
+  if ($userId) {
+    return '<a href="profile.php?id=' . $userId . '">' . htmlspecialchars($author) . '</a>';
+  }
+  return htmlspecialchars($author);
+}
+
+function getAvatar($userId) {
+  $path = AVATAR_DIR . '/' . (int)$userId . '.jpg';
+  if (file_exists($path)) {
+    return 'uploads/avatars/' . (int)$userId . '.jpg?t=' . filemtime($path);
+  }
+  return false;
+}
+
+function ensureDirs() {
+  foreach ([UPLOAD_DIR, AVATAR_DIR, PROJECT_DIR] as $dir) {
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+  }
+}
+
+function uploadImage($file, $destDir) {
+  $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if ($file['error'] !== UPLOAD_ERR_OK) return null;
+  if ($file['size'] > MAX_FILE_SIZE) return null;
+  if (!in_array($file['type'], $allowed)) return null;
+  $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+  $name = uniqid() . '.' . $ext;
+  $dest = $destDir . '/' . $name;
+  if (move_uploaded_file($file['tmp_name'], $dest)) {
+    return $name;
+  }
+  return null;
+}
+
+ensureDirs();

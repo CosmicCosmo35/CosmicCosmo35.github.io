@@ -12,6 +12,7 @@
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="index.php">Forum</a>
+    <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php" class="active">Announcements</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
@@ -39,7 +40,7 @@
     ?>
     <div class="announcement-preview">
       <h2><a href="announcement.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
-      <p class="meta">by <?= htmlspecialchars($row['author']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?> replies</p>
+      <p class="meta">by <?= authorLink($row['author'], $row['user_id']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?> replies</p>
       <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 200)) ?></div>
     </div>
     <?php
