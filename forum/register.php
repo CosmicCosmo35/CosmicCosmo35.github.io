@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $password = $_POST['password'] ?? '';
   $confirm = $_POST['confirm'] ?? '';
 
-  if (strlen($username) < 3 || strlen($username) > 20) {
-    $error = 'Username must be 3-20 characters.';
+  if (strlen($username) < 3 || strlen($username) > MAX_USERNAME_LENGTH) {
+    $error = 'Username must be 3-' . MAX_USERNAME_LENGTH . ' characters.';
   } elseif ($password !== $confirm) {
     $error = 'Passwords do not match.';
   } elseif (strlen($password) < 4) {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <p class="error"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
     <form method="post" class="auth-form">
-      <input type="text" name="username" placeholder="Username" required minlength="3" maxlength="20">
+      <input type="text" name="username" placeholder="Username" required minlength="3" maxlength="<?= MAX_USERNAME_LENGTH ?>">
       <input type="password" name="password" placeholder="Password" required minlength="4">
       <input type="password" name="confirm" placeholder="Confirm password" required>
       <button type="submit">Register</button>

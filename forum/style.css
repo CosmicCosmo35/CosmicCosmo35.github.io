@@ -69,7 +69,11 @@ body {
   border-radius: 6px;
   margin-bottom: 12px;
 }
-.reply p { margin-top: 8px; }
+.reply p {
+  margin-top: 8px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
 
 .reply-form {
   margin-top: 24px;

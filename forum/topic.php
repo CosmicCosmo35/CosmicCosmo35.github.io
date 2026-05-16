@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
   $author = isLoggedIn() ? currentUser() : (trim($_POST['author']) ?: 'Anonymous');
   $body = trim($_POST['body']);
   $userId = currentUserId();
+  if (strlen($author) > MAX_USERNAME_LENGTH) $author = substr($author, 0, MAX_USERNAME_LENGTH);
   if ($body && strlen($body) <= MAX_REPLY_LENGTH) {
     $stmt = $db->prepare("INSERT INTO replies (topic_id, author, user_id, body) VALUES (?, ?, ?, ?)");
     $stmt->bindValue(1, $id, SQLITE3_INTEGER);
@@ -70,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <form method="post" class="reply-form">
       <h3>Post a reply</h3>
       <?php if (!isLoggedIn()): ?>
-        <input type="text" name="author" placeholder="Your name (optional)">
+        <input type="text" name="author" placeholder="Your name (optional)" maxlength="<?= MAX_USERNAME_LENGTH ?>">
       <?php endif; ?>
       <textarea name="body" placeholder="Write your reply... (max <?= MAX_REPLY_LENGTH ?> characters)" required maxlength="<?= MAX_REPLY_LENGTH ?>"></textarea>
       <span class="char-count">0 / <?= MAX_REPLY_LENGTH ?></span>

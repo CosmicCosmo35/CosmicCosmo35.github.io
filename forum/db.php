@@ -42,6 +42,7 @@ function currentUserId() {
   return $_SESSION['user_id'] ?? null;
 }
 
-define('MAX_BODY_LENGTH', 2000);
-define('MAX_REPLY_LENGTH', 1000);
-define('MAX_TITLE_LENGTH', 100);
+define('MAX_BODY_LENGTH', 500);
+define('MAX_REPLY_LENGTH', 300);
+define('MAX_TITLE_LENGTH', 60);
+define('MAX_USERNAME_LENGTH', 15);
