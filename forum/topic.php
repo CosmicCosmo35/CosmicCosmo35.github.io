@@ -17,7 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
     $stmt->bindValue(4, $body, SQLITE3_TEXT);
     $stmt->execute();
-    header("Location: topic.php?id=$id");
+    $totalPages = max(1, (int)ceil(($db->querySingle("SELECT COUNT(*) FROM replies WHERE topic_id = $id")) / REPLIES_PER_PAGE));
+    header("Location: topic.php?id=$id&page=$totalPages");
     exit;
   }
 }
@@ -42,6 +43,12 @@ if (isset($_GET['delete_topic'])) {
 }
 
 $canModify = isLoggedIn() && (currentUserId() == $topic['user_id'] || isAdmin());
+
+$page = max(1, (int)($_GET['page'] ?? 1));
+$totalReplies = $db->querySingle("SELECT COUNT(*) FROM replies WHERE topic_id = $id");
+$totalPages = max(1, (int)ceil($totalReplies / REPLIES_PER_PAGE));
+$offset = ($page - 1) * REPLIES_PER_PAGE;
+$replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY created_at ASC LIMIT " . REPLIES_PER_PAGE . " OFFSET $offset");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,9 +88,10 @@ $canModify = isLoggedIn() && (currentUserId() == $topic['user_id'] || isAdmin())
       <?php endif; ?>
     </p>
 
+    <?= paginationLinks($page, $totalPages, 'topic.php?id=' . $id . '&') ?>
+
     <div class="replies">
       <?php
-      $replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY created_at ASC");
       $hasReplies = false;
       while ($reply = $replies->fetchArray(SQLITE3_ASSOC)):
         $hasReplies = true;
@@ -105,6 +113,8 @@ $canModify = isLoggedIn() && (currentUserId() == $topic['user_id'] || isAdmin())
       <p>No replies yet.</p>
       <?php endif; ?>
     </div>
+
+    <?= paginationLinks($page, $totalPages, 'topic.php?id=' . $id . '&') ?>
 
     <?php if (isLoggedIn()): ?>
     <form method="post" class="reply-form">

@@ -1,13 +1,23 @@
 <?php require __DIR__ . '/db.php';
 if (!isLoggedIn()) { header('Location: login.php'); exit; }
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title'] ?? '');
   $author = currentUser();
   $body = trim($_POST['body'] ?? '');
   $tags = trim($_POST['tags'] ?? '');
   $userId = currentUserId();
-  if ($title && $body && strlen($title) <= MAX_TITLE_LENGTH && strlen($body) <= MAX_BODY_LENGTH) {
+  if (!$title || !$body) {
+    $error = 'Title and body are required.';
+  } elseif (strlen($title) > MAX_TITLE_LENGTH) {
+    $error = 'Title too long (max ' . MAX_TITLE_LENGTH . ').';
+  } elseif (strlen($body) > MAX_BODY_LENGTH) {
+    $error = 'Body too long (max ' . MAX_BODY_LENGTH . ').';
+  } elseif ($tags && !validTags($tags)) {
+    $error = 'Maximum ' . MAX_TAGS . ' tags allowed.';
+  } else {
     sleep(POST_DELAY);
     $stmt = $db->prepare("INSERT INTO topics (title, author, user_id, tags) VALUES (?, ?, ?, ?)");
     $stmt->bindValue(1, $title, SQLITE3_TEXT);
@@ -58,10 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="content">
     <a href="index.php">&larr; Back to Forum</a>
     <h1>Create New Topic</h1>
+    <?php if ($error): ?>
+      <p class="error"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
 
     <form method="post" class="reply-form">
       <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
-      <input type="text" name="tags" placeholder="Tags (comma-separated, e.g. physics, chemistry)" maxlength="100">
+      <input type="text" name="tags" placeholder="Tags (max <?= MAX_TAGS ?>, comma-separated, e.g. physics, chemistry)" maxlength="100">
       <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
       <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>

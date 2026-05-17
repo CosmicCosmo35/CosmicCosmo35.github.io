@@ -5,10 +5,18 @@ $topic = $db->querySingle("SELECT * FROM topics WHERE id = $id", true);
 if (!$topic) { header('Location: index.php'); exit; }
 if (!isLoggedIn() || !(currentUserId() == $topic['user_id'] || isAdmin())) { header('Location: login.php'); exit; }
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title'] ?? '');
   $tags = trim($_POST['tags'] ?? '');
-  if ($title && strlen($title) <= MAX_TITLE_LENGTH) {
+  if (!$title) {
+    $error = 'Title is required.';
+  } elseif (strlen($title) > MAX_TITLE_LENGTH) {
+    $error = 'Title too long (max ' . MAX_TITLE_LENGTH . ').';
+  } elseif ($tags && !validTags($tags)) {
+    $error = 'Maximum ' . MAX_TAGS . ' tags allowed.';
+  } else {
     $stmt = $db->prepare("UPDATE topics SET title = ?, tags = ? WHERE id = ?");
     $stmt->bindValue(1, $title, SQLITE3_TEXT);
     $stmt->bindValue(2, $tags, SQLITE3_TEXT);
@@ -45,10 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="content">
     <a href="topic.php?id=<?= $id ?>">&larr; Back to topic</a>
     <h1>Edit Topic</h1>
+    <?php if ($error): ?>
+      <p class="error"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
 
     <form method="post" class="reply-form">
       <input type="text" name="title" value="<?= htmlspecialchars($topic['title']) ?>" required maxlength="<?= MAX_TITLE_LENGTH ?>">
-      <input type="text" name="tags" value="<?= htmlspecialchars($topic['tags']) ?>" placeholder="Tags (comma-separated)" maxlength="100">
+      <input type="text" name="tags" value="<?= htmlspecialchars($topic['tags']) ?>" placeholder="Tags (max <?= MAX_TAGS ?>, comma-separated)" maxlength="100">
       <button type="submit">Save Changes</button>
     </form>
   </div>

@@ -227,6 +227,16 @@ a.user-badge:hover { background: #ddd; }
   color: #555; text-decoration: none;
 }
 .tag:hover { background: #ddd; }
+.pagination {
+  margin: 16px 0; font-size: 0.85rem;
+  display: flex; gap: 4px; align-items: center;
+}
+.pagination a, .pagination strong {
+  padding: 4px 10px; border: 1px solid #ddd;
+  border-radius: 3px; text-decoration: none; color: #222;
+}
+.pagination a:hover { background: #eee; }
+.pagination strong { background: #222; color: #fff; border-color: #222; }
 .file-label { font-size: 0.9rem; color: #555; }
 .file-label input { font-size: 0.9rem; }
 

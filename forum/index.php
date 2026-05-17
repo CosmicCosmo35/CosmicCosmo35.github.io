@@ -1,6 +1,25 @@
 <?php require __DIR__ . '/db.php';
 
 $tagFilter = isset($_GET['tag']) ? trim($_GET['tag']) : '';
+$page = max(1, (int)($_GET['page'] ?? 1));
+$offset = ($page - 1) * TOPICS_PER_PAGE;
+
+if ($tagFilter) {
+  $countStmt = $db->prepare("SELECT COUNT(*) FROM topics WHERE tags LIKE ?");
+  $countStmt->bindValue(1, '%' . $tagFilter . '%', SQLITE3_TEXT);
+  $totalTopics = $countStmt->execute()->fetchArray()[0];
+  $totalPages = max(1, (int)ceil($totalTopics / TOPICS_PER_PAGE));
+  $stmt = $db->prepare("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t WHERE t.tags LIKE ? ORDER BY t.created_at DESC LIMIT ? OFFSET ?");
+  $stmt->bindValue(1, '%' . $tagFilter . '%', SQLITE3_TEXT);
+  $stmt->bindValue(2, TOPICS_PER_PAGE, SQLITE3_INTEGER);
+  $stmt->bindValue(3, $offset, SQLITE3_INTEGER);
+  $result = $stmt->execute();
+} else {
+  $totalTopics = $db->querySingle("SELECT COUNT(*) FROM topics");
+  $totalPages = max(1, (int)ceil($totalTopics / TOPICS_PER_PAGE));
+  $result = $db->query("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t ORDER BY t.created_at DESC LIMIT " . TOPICS_PER_PAGE . " OFFSET $offset");
+}
+$urlBase = 'index.php' . ($tagFilter ? '?tag=' . urlencode($tagFilter) . '&' : '?');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,19 +49,17 @@ $tagFilter = isset($_GET['tag']) ? trim($_GET['tag']) : '';
 
   <div class="content">
     <h1>Forum<?= $tagFilter ? ' - Tag: ' . htmlspecialchars($tagFilter) : '' ?></h1>
-    <a href="post.php" class="btn">+ New Topic</a>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <a href="post.php" class="btn" style="margin-bottom:0">+ New Topic</a>
+      <span class="meta" style="margin-bottom:0"><?= $totalTopics ?> topic<?= $totalTopics !== 1 ? 's' : '' ?></span>
+    </div>
 
-    <table class="topic-table">
+    <table class="topic-table" style="margin-top:16px">
       <tr><th>Topic</th><th>Tags</th><th>Author</th><th>Replies</th><th>Last updated</th></tr>
       <?php
-      if ($tagFilter) {
-        $stmt = $db->prepare("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t WHERE t.tags LIKE ? ORDER BY t.created_at DESC");
-        $stmt->bindValue(1, '%' . $tagFilter . '%', SQLITE3_TEXT);
-        $result = $stmt->execute();
-      } else {
-        $result = $db->query("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t ORDER BY t.created_at DESC");
-      }
+      $hasAny = false;
       while ($row = $result->fetchArray(SQLITE3_ASSOC)):
+        $hasAny = true;
       ?>
       <tr>
         <td><a href="topic.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></td>
@@ -52,7 +69,12 @@ $tagFilter = isset($_GET['tag']) ? trim($_GET['tag']) : '';
         <td><?= formatDate($row['created_at']) ?></td>
       </tr>
       <?php endwhile; ?>
+      <?php if (!$hasAny): ?>
+      <tr><td colspan="5" style="text-align:center;color:#888;padding:24px">No topics yet.</td></tr>
+      <?php endif; ?>
     </table>
+
+    <?= paginationLinks($page, $totalPages, $urlBase) ?>
   </div>
 </body>
 </html>

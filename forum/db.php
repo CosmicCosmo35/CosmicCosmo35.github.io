@@ -70,6 +70,9 @@ define('MAX_REPLY_LENGTH', 300);
 define('MAX_TITLE_LENGTH', 60);
 define('MAX_USERNAME_LENGTH', 15);
 define('MAX_ANNOUNCEMENT_REPLIES', 2);
+define('MAX_TAGS', 5);
+define('TOPICS_PER_PAGE', 20);
+define('REPLIES_PER_PAGE', 10);
 define('UPLOAD_DIR', __DIR__ . '/uploads');
 define('AVATAR_DIR', UPLOAD_DIR . '/avatars');
 define('PROJECT_DIR', UPLOAD_DIR . '/projects');
@@ -99,6 +102,28 @@ function renderTags($tags) {
   foreach ($parts as $t) {
     if ($t) $out .= '<a href="index.php?tag=' . urlencode($t) . '" class="tag">' . htmlspecialchars($t) . '</a> ';
   }
+  return $out;
+}
+
+function validTags($tags) {
+  $parts = array_map('trim', explode(',', $tags));
+  $count = 0;
+  foreach ($parts as $t) {
+    if ($t !== '') $count++;
+  }
+  return $count <= MAX_TAGS;
+}
+
+function paginationLinks($current, $total, $url) {
+  if ($total <= 1) return '';
+  $out = '<div class="pagination">';
+  if ($current > 1) $out .= '<a href="' . $url . 'page=' . ($current - 1) . '">&laquo; Prev</a> ';
+  for ($i = 1; $i <= $total; $i++) {
+    if ($i == $current) $out .= '<strong>' . $i . '</strong> ';
+    else $out .= '<a href="' . $url . 'page=' . $i . '">' . $i . '</a> ';
+  }
+  if ($current < $total) $out .= '<a href="' . $url . 'page=' . ($current + 1) . '">Next &raquo;</a>';
+  $out .= '</div>';
   return $out;
 }
 
