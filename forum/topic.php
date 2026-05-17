@@ -24,39 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     exit;
   }
 }
-
-function renderPostbit($stats, $author, $title, $postNum, $date, $body) {
 ?>
-    <div class="postbit">
-      <div class="postbit-user">
-        <?php if ($stats): ?>
-          <div class="user-avatar">
-            <?php $av = getAvatar($stats['id']); if ($av): ?>
-              <img src="<?= $av ?>" alt="">
-            <?php else: ?>
-              <div class="avatar-letter"><?= strtoupper($stats['username'][0]) ?></div>
-            <?php endif; ?>
-          </div>
-          <div class="user-name"><?= authorLink($stats['username'], $stats['id']) ?></div>
-          <div class="user-title"><?= $title ?></div>
-          <div class="user-stats">
-            Posts: <?= $stats['topics'] + $stats['replies'] ?><br>
-            Joined: <?= formatDate($stats['created_at']) ?>
-          </div>
-        <?php else: ?>
-          <div class="user-avatar"><div class="avatar-letter"><?= strtoupper(($author ?: 'A')[0]) ?></div></div>
-          <div class="user-name"><?= htmlspecialchars($author) ?></div>
-        <?php endif; ?>
-      </div>
-      <div class="postbit-body">
-        <div class="postbit-header">
-          <span class="postbit-num">#<?= $postNum ?></span>
-          <span class="post-date"><?= formatDate($date) ?></span>
-        </div>
-        <div class="postbit-content"><?= renderMarkdown($body) ?></div>
-      </div>
-    </div>
-<?php } ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,11 +55,44 @@ function renderPostbit($stats, $author, $title, $postNum, $date, $body) {
       <a href="index.php">Forum</a> &raquo; <?= htmlspecialchars($topic['title']) ?>
     </div>
 
-    <?php
-    $firstReply = $db->querySingle("SELECT * FROM replies WHERE topic_id = $id ORDER BY created_at ASC LIMIT 1", true);
-    $body = $firstReply ? $firstReply['body'] : '';
-    renderPostbit($topicUserStats, $topic['author'], 'Topic Creator', 1, $topic['created_at'], $body);
+    <div class="postbit">
+      <div class="postbit-user">
+        <?php if ($topicUserStats): ?>
+          <div class="user-avatar">
+            <?php $av = getAvatar($topicUserStats['id']); if ($av): ?>
+              <img src="<?= $av ?>" alt="">
+            <?php else: ?>
+              <div class="avatar-letter"><?= strtoupper($topicUserStats['username'][0]) ?></div>
+            <?php endif; ?>
+          </div>
+          <div class="user-title">Topic Creator</div>
+          <div class="user-name"><?= authorLink($topicUserStats['username'], $topicUserStats['id']) ?></div>
+          <div class="user-stats">
+            <span>Posts: <?= $topicUserStats['topics'] + $topicUserStats['replies'] ?></span>
+            <span>Joined: <?= formatDate($topicUserStats['created_at']) ?></span>
+          </div>
+        <?php else: ?>
+          <div class="user-avatar"><div class="avatar-letter">?</div></div>
+          <div class="user-name"><?= htmlspecialchars($topic['author']) ?></div>
+        <?php endif; ?>
+      </div>
+      <div class="postbit-body">
+        <div class="postbit-header">
+          <span class="postbit-num">#1</span>
+          <span class="post-date"><?= formatDate($topic['created_at']) ?></span>
+        </div>
+        <div class="postbit-content">
+          <?php
+          $firstReply = $db->querySingle("SELECT * FROM replies WHERE topic_id = $id ORDER BY created_at ASC LIMIT 1", true);
+          if ($firstReply) {
+            echo renderMarkdown($firstReply['body']);
+          }
+          ?>
+        </div>
+      </div>
+    </div>
 
+    <?php
     $replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY created_at ASC");
     $first = true;
     $postNum = 1;
@@ -99,9 +100,37 @@ function renderPostbit($stats, $author, $title, $postNum, $date, $body) {
       if ($first) { $first = false; continue; }
       $postNum++;
       $replyUserStats = $reply['user_id'] ? getUserStats($reply['user_id']) : null;
-      renderPostbit($replyUserStats, $reply['author'], 'Member', $postNum, $reply['created_at'], $reply['body']);
-    endwhile;
     ?>
+    <div class="postbit">
+      <div class="postbit-user">
+        <?php if ($replyUserStats): ?>
+          <div class="user-avatar">
+            <?php $av = getAvatar($replyUserStats['id']); if ($av): ?>
+              <img src="<?= $av ?>" alt="">
+            <?php else: ?>
+              <div class="avatar-letter"><?= strtoupper($replyUserStats['username'][0]) ?></div>
+            <?php endif; ?>
+          </div>
+          <div class="user-title">Member</div>
+          <div class="user-name"><?= authorLink($replyUserStats['username'], $replyUserStats['id']) ?></div>
+          <div class="user-stats">
+            <span>Posts: <?= $replyUserStats['topics'] + $replyUserStats['replies'] ?></span>
+            <span>Joined: <?= formatDate($replyUserStats['created_at']) ?></span>
+          </div>
+        <?php else: ?>
+          <div class="user-avatar"><div class="avatar-letter"><?= strtoupper(($reply['author'] ?: 'A')[0]) ?></div></div>
+          <div class="user-name"><?= htmlspecialchars($reply['author']) ?></div>
+        <?php endif; ?>
+      </div>
+      <div class="postbit-body">
+        <div class="postbit-header">
+          <span class="postbit-num">#<?= $postNum ?></span>
+          <span class="post-date"><?= formatDate($reply['created_at']) ?></span>
+        </div>
+        <div class="postbit-content"><?= renderMarkdown($reply['body']) ?></div>
+      </div>
+    </div>
+    <?php endwhile; ?>
 
     <?php if (isLoggedIn()): ?>
     <form method="post" class="reply-form">

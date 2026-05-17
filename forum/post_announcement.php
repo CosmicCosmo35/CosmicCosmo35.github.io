@@ -45,11 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post" class="reply-form">
       <input type="text" name="title" placeholder="Announcement title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
+      <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <textarea name="body" placeholder="Write your announcement... Markdown supported (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
-      <div class="reply-form-footer">
-        <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
-        <span class="meta"><?= POST_DELAY ?>s delay</span>
-      </div>
+      <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>
       <button type="submit">Post Announcement</button>
     </form>
   </div>

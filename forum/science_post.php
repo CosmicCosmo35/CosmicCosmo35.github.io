@@ -46,7 +46,6 @@ $postUser = $post['user_id'] ? getUserStats($post['user_id']) : null;
               <div class="avatar-letter"><?= strtoupper($postUser['username'][0]) ?></div>
             <?php endif; ?>
           </div>
-          <div class="user-title">Member</div>
           <div class="user-name"><?= authorLink($postUser['username'], $postUser['id']) ?></div>
           <div class="user-stats">
             <span>Posts: <?= $postUser['topics'] + $postUser['replies'] ?></span>
@@ -59,7 +58,6 @@ $postUser = $post['user_id'] ? getUserStats($post['user_id']) : null;
       </div>
       <div class="postbit-body">
         <div class="postbit-header">
-          <span class="postbit-num">#1</span>
           <span class="post-date"><?= formatDate($post['created_at']) ?></span>
         </div>
 

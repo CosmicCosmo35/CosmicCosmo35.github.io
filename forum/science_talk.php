@@ -25,16 +25,16 @@
   </div>
 
   <div class="content">
-    <div class="page-head">
-      <h1>Science Talk</h1>
-      <div class="page-head-right">
-        <span class="page-nav">Share your projects and photos!</span>
-        <?php if (isLoggedIn()): ?>
-          <a href="post_science.php" class="btn">+ New Post</a>
-        <?php else: ?>
-          <a href="login.php" class="btn">+ New Post</a>
-        <?php endif; ?>
+    <div class="page-actions">
+      <div>
+        <h1>Science Talk</h1>
+        <p class="meta" style="margin:2px 0 0">Share your projects and photos!</p>
       </div>
+      <?php if (isLoggedIn()): ?>
+        <a href="post_science.php" class="btn">+ New Post</a>
+      <?php else: ?>
+        <a href="login.php" class="btn">+ New Post</a>
+      <?php endif; ?>
     </div>
 
     <?php
