@@ -70,7 +70,7 @@ define('MAX_REPLY_LENGTH', 300);
 define('MAX_TITLE_LENGTH', 60);
 define('MAX_USERNAME_LENGTH', 15);
 define('MAX_ANNOUNCEMENT_REPLIES', 2);
-define('MAX_TAGS', 5);
+define('MAX_TAGS_LENGTH', 100);
 define('TOPICS_PER_PAGE', 20);
 define('REPLIES_PER_PAGE', 10);
 define('UPLOAD_DIR', __DIR__ . '/uploads');
@@ -103,15 +103,6 @@ function renderTags($tags) {
     if ($t) $out .= '<a href="index.php?tag=' . urlencode($t) . '" class="tag">' . htmlspecialchars($t) . '</a> ';
   }
   return $out;
-}
-
-function validTags($tags) {
-  $parts = array_map('trim', explode(',', $tags));
-  $count = 0;
-  foreach ($parts as $t) {
-    if ($t !== '') $count++;
-  }
-  return $count <= MAX_TAGS;
 }
 
 function paginationLinks($current, $total, $url) {

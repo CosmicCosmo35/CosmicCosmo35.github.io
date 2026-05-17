@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = 'Title is required.';
   } elseif (strlen($title) > MAX_TITLE_LENGTH) {
     $error = 'Title too long (max ' . MAX_TITLE_LENGTH . ').';
-  } elseif ($tags && !validTags($tags)) {
-    $error = 'Maximum ' . MAX_TAGS . ' tags allowed.';
+  } elseif (strlen($tags) > MAX_TAGS_LENGTH) {
+    $error = 'Tags too long (max ' . MAX_TAGS_LENGTH . ' characters).';
   } else {
     $stmt = $db->prepare("UPDATE topics SET title = ?, tags = ? WHERE id = ?");
     $stmt->bindValue(1, $title, SQLITE3_TEXT);
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post" class="reply-form">
       <input type="text" name="title" value="<?= htmlspecialchars($topic['title']) ?>" required maxlength="<?= MAX_TITLE_LENGTH ?>">
-      <input type="text" name="tags" value="<?= htmlspecialchars($topic['tags']) ?>" placeholder="Tags (max <?= MAX_TAGS ?>, comma-separated)" maxlength="100">
+      <input type="text" name="tags" value="<?= htmlspecialchars($topic['tags']) ?>" placeholder="Tags (comma-separated)" maxlength="<?= MAX_TAGS_LENGTH ?>">
       <button type="submit">Save Changes</button>
     </form>
   </div>

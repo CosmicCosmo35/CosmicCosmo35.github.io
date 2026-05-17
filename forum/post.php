@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = 'Title too long (max ' . MAX_TITLE_LENGTH . ').';
   } elseif (strlen($body) > MAX_BODY_LENGTH) {
     $error = 'Body too long (max ' . MAX_BODY_LENGTH . ').';
-  } elseif ($tags && !validTags($tags)) {
-    $error = 'Maximum ' . MAX_TAGS . ' tags allowed.';
+  } elseif (strlen($tags) > MAX_TAGS_LENGTH) {
+    $error = 'Tags too long (max ' . MAX_TAGS_LENGTH . ' characters).';
   } else {
     sleep(POST_DELAY);
     $stmt = $db->prepare("INSERT INTO topics (title, author, user_id, tags) VALUES (?, ?, ?, ?)");
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post" class="reply-form">
       <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
-      <input type="text" name="tags" placeholder="Tags (max <?= MAX_TAGS ?>, comma-separated, e.g. physics, chemistry)" maxlength="100">
+      <input type="text" name="tags" placeholder="Tags (comma-separated, e.g. physics, chemistry)" maxlength="<?= MAX_TAGS_LENGTH ?>">
       <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
       <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>
