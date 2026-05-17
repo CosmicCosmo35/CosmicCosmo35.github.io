@@ -54,14 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 
   <div class="content">
-    <a href="index.php">&larr; Back to Forum</a>
+    <div class="breadcrumb"><a href="index.php">Forum</a> &raquo; New Topic</div>
     <h1>Create New Topic</h1>
 
     <form method="post" class="reply-form">
       <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
       <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
-      <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>
+      <div class="reply-form-footer">
+        <span class="meta"><?= POST_DELAY ?>s delay</span>
+      </div>
       <button type="submit">Create Topic</button>
     </form>
   </div>

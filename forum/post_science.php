@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 
   <div class="content">
-    <a href="science_talk.php">&larr; Back to Science Talk</a>
+    <div class="breadcrumb"><a href="science_talk.php">Science Talk</a> &raquo; New Post</div>
     <h1>New Science Post</h1>
     <?php if ($error): ?>
       <p class="error"><?= htmlspecialchars($error) ?></p>

@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
               <div class="avatar-letter"><?= strtoupper($annUser['username'][0]) ?></div>
             <?php endif; ?>
           </div>
+          <div class="user-title">Admin</div>
           <div class="user-name"><?= authorLink($annUser['username'], $annUser['id']) ?></div>
           <div class="user-stats">
             <span>Posts: <?= $annUser['topics'] + $annUser['replies'] ?></span>
@@ -86,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       </div>
       <div class="postbit-body">
         <div class="postbit-header">
+          <span class="postbit-num">#1</span>
           <span class="post-date"><?= formatDate($announcement['created_at']) ?></span>
         </div>
         <div class="postbit-content"><?= renderMarkdown($announcement['body']) ?></div>
@@ -97,8 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <?php
     $replies = $db->query("SELECT * FROM announcement_replies WHERE announcement_id = $id ORDER BY created_at ASC");
     $hasReplies = false;
+    $replyNum = 1;
     while ($reply = $replies->fetchArray(SQLITE3_ASSOC)):
       $hasReplies = true;
+      $replyNum++;
       $replyUser = $reply['user_id'] ? getUserStats($reply['user_id']) : null;
     ?>
     <div class="postbit">
@@ -111,6 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
               <div class="avatar-letter"><?= strtoupper($replyUser['username'][0]) ?></div>
             <?php endif; ?>
           </div>
+          <div class="user-title">Member</div>
           <div class="user-name"><?= authorLink($replyUser['username'], $replyUser['id']) ?></div>
           <div class="user-stats">
             <span>Posts: <?= $replyUser['topics'] + $replyUser['replies'] ?></span>
@@ -123,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       </div>
       <div class="postbit-body">
         <div class="postbit-header">
+          <span class="postbit-num">#<?= $replyNum ?></span>
           <span class="post-date"><?= formatDate($reply['created_at']) ?></span>
         </div>
         <div class="postbit-content"><?= renderMarkdown($reply['body']) ?></div>
