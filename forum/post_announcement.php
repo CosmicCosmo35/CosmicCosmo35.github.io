@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 
   <div class="content">
-    <div class="breadcrumb"><a href="announcements.php">Announcements</a> &raquo; New Announcement</div>
+    <a href="announcements.php">&larr; Back to Announcements</a>
     <h1>Create New Announcement</h1>
 
     <form method="post" class="reply-form">

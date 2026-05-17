@@ -25,15 +25,8 @@
   </div>
 
   <div class="content">
-    <?php
-    $topicCount = $db->querySingle("SELECT COUNT(*) FROM topics");
-    $totalReplies = $db->querySingle("SELECT COUNT(*) FROM replies");
-    ?>
     <div class="page-actions">
-      <div>
-        <h1>Forum</h1>
-        <p class="meta" style="margin:2px 0 0"><?= $topicCount ?> topics &middot; <?= $totalReplies ?> replies</p>
-      </div>
+      <h1>Forum</h1>
       <?php if (isLoggedIn()): ?>
         <a href="post.php" class="btn">+ New Topic</a>
       <?php else: ?>

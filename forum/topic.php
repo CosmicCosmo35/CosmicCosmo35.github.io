@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       <a href="index.php">Forum</a> &raquo; <?= htmlspecialchars($topic['title']) ?>
     </div>
 
-    <div class="postbit">
+    <div class="postbit" id="post-topic">
       <div class="postbit-user">
         <?php if ($topicUserStats): ?>
           <div class="user-avatar">
@@ -65,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
               <div class="avatar-letter"><?= strtoupper($topicUserStats['username'][0]) ?></div>
             <?php endif; ?>
           </div>
-          <div class="user-title">Topic Creator</div>
           <div class="user-name"><?= authorLink($topicUserStats['username'], $topicUserStats['id']) ?></div>
           <div class="user-stats">
             <span>Posts: <?= $topicUserStats['topics'] + $topicUserStats['replies'] ?></span>
@@ -78,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       </div>
       <div class="postbit-body">
         <div class="postbit-header">
-          <span class="postbit-num">#1</span>
           <span class="post-date"><?= formatDate($topic['created_at']) ?></span>
         </div>
         <div class="postbit-content">
@@ -95,10 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <?php
     $replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY created_at ASC");
     $first = true;
-    $postNum = 1;
     while ($reply = $replies->fetchArray(SQLITE3_ASSOC)):
       if ($first) { $first = false; continue; }
-      $postNum++;
       $replyUserStats = $reply['user_id'] ? getUserStats($reply['user_id']) : null;
     ?>
     <div class="postbit">
@@ -111,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
               <div class="avatar-letter"><?= strtoupper($replyUserStats['username'][0]) ?></div>
             <?php endif; ?>
           </div>
-          <div class="user-title">Member</div>
           <div class="user-name"><?= authorLink($replyUserStats['username'], $replyUserStats['id']) ?></div>
           <div class="user-stats">
             <span>Posts: <?= $replyUserStats['topics'] + $replyUserStats['replies'] ?></span>
@@ -124,7 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       </div>
       <div class="postbit-body">
         <div class="postbit-header">
-          <span class="postbit-num">#<?= $postNum ?></span>
           <span class="post-date"><?= formatDate($reply['created_at']) ?></span>
         </div>
         <div class="postbit-content"><?= renderMarkdown($reply['body']) ?></div>
