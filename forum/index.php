@@ -1,10 +1,4 @@
-<?php require __DIR__ . '/db.php';
-
-$topicCount = $db->querySingle("SELECT COUNT(*) FROM topics");
-$replyCount = $db->querySingle("SELECT COUNT(*) FROM replies");
-$userCount = $db->querySingle("SELECT COUNT(*) FROM users");
-$scienceCount = $db->querySingle("SELECT COUNT(*) FROM science_posts");
-?>
+<?php require __DIR__ . '/db.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,82 +25,14 @@ $scienceCount = $db->querySingle("SELECT COUNT(*) FROM science_posts");
   </div>
 
   <div class="content">
-
-    <div class="cat-header"><span class="cat-icon">&#9632;</span> Awesome Science</div>
-
-    <div class="board-row">
-      <div class="board-icon">F</div>
-      <div class="board-info">
-        <div class="board-name"><a href="index.php">Forum</a></div>
-        <div class="board-desc">General discussion and topics</div>
-      </div>
-      <div class="board-stats">
-        <span class="num"><?= $topicCount ?></span> topics<br>
-        <span class="num"><?= $replyCount ?></span> replies
-      </div>
-      <div class="board-last">
-        <?php
-        $latest = $db->querySingle("SELECT id, title, created_at FROM topics ORDER BY created_at DESC LIMIT 1", true);
-        if ($latest):
-        ?>
-        <a href="topic.php?id=<?= $latest['id'] ?>"><?= htmlspecialchars($latest['title']) ?></a>
-        <div class="date"><?= formatDate($latest['created_at']) ?></div>
-        <?php else: ?>
-        No posts yet
-        <?php endif; ?>
-      </div>
-    </div>
-
-    <div class="board-row">
-      <div class="board-icon">S</div>
-      <div class="board-info">
-        <div class="board-name"><a href="science_talk.php">Science Talk</a></div>
-        <div class="board-desc">Share your projects and photos</div>
-      </div>
-      <div class="board-stats">
-        <span class="num"><?= $scienceCount ?></span> posts
-      </div>
-      <div class="board-last">
-        <?php
-        $latestSci = $db->querySingle("SELECT id, title, created_at FROM science_posts ORDER BY created_at DESC LIMIT 1", true);
-        if ($latestSci):
-        ?>
-        <a href="science_post.php?id=<?= $latestSci['id'] ?>"><?= htmlspecialchars($latestSci['title']) ?></a>
-        <div class="date"><?= formatDate($latestSci['created_at']) ?></div>
-        <?php else: ?>
-        No posts yet
-        <?php endif; ?>
-      </div>
-    </div>
-
-    <div class="board-row">
-      <div class="board-icon">A</div>
-      <div class="board-info">
-        <div class="board-name"><a href="announcements.php">Announcements</a></div>
-        <div class="board-desc">Official announcements from Cosmo</div>
-      </div>
-      <div class="board-stats">
-        <?php $annCount = $db->querySingle("SELECT COUNT(*) FROM announcements"); ?>
-        <span class="num"><?= $annCount ?></span> posts
-      </div>
-      <div class="board-last">
-        <?php
-        $latestAnn = $db->querySingle("SELECT id, title, created_at FROM announcements ORDER BY created_at DESC LIMIT 1", true);
-        if ($latestAnn):
-        ?>
-        <a href="announcement.php?id=<?= $latestAnn['id'] ?>"><?= htmlspecialchars($latestAnn['title']) ?></a>
-        <div class="date"><?= formatDate($latestAnn['created_at']) ?></div>
-        <?php else: ?>
-        No posts yet
-        <?php endif; ?>
-      </div>
-    </div>
-
-    <div class="cat-header" style="margin-top:14px"><span class="cat-icon">&#9632;</span> Recent Topics</div>
-
+    <?php
+    $topicCount = $db->querySingle("SELECT COUNT(*) FROM topics");
+    $totalReplies = $db->querySingle("SELECT COUNT(*) FROM replies");
+    ?>
     <div class="page-actions">
       <div>
         <h1>Forum</h1>
+        <p class="meta" style="margin:2px 0 0"><?= $topicCount ?> topics &middot; <?= $totalReplies ?> replies</p>
       </div>
       <?php if (isLoggedIn()): ?>
         <a href="post.php" class="btn">+ New Topic</a>
@@ -145,16 +71,6 @@ $scienceCount = $db->querySingle("SELECT COUNT(*) FROM science_posts");
         <?php endif; ?>
       </tbody>
     </table>
-
-    <div class="info-center">
-      <h3>Awesome Science - Info Center</h3>
-      <div class="stat-row"><strong>Forum Stats:</strong> <?= $topicCount ?> topics in <?= $replyCount ?> replies by <?= $userCount ?> members</div>
-      <div class="stat-row"><strong>Latest Member:</strong> <?php
-        $latestUser = $db->querySingle("SELECT username FROM users ORDER BY id DESC LIMIT 1", true);
-        echo $latestUser ? htmlspecialchars($latestUser['username']) : 'N/A';
-      ?></div>
-    </div>
-
   </div>
 </body>
 </html>
