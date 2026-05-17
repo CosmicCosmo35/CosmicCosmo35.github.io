@@ -25,35 +25,23 @@
   </div>
 
   <div class="content">
-    <div class="page-head">
-      <h1>Forum</h1>
-      <?php if (isLoggedIn()): ?>
-        <a href="post.php" class="btn">+ New Topic</a>
-      <?php else: ?>
-        <a href="login.php" class="btn">+ New Topic</a>
-      <?php endif; ?>
-    </div>
+    <h1>Forum</h1>
+    <a href="post.php" class="btn">+ New Topic</a>
 
-    <?php
-    $result = $db->query("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t ORDER BY t.created_at DESC");
-    $hasAny = false;
-    while ($row = $result->fetchArray(SQLITE3_ASSOC)):
-      $hasAny = true;
-    ?>
-    <div class="topic-card">
-      <div class="topic-card-main">
-        <h2><a href="topic.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
-        <div class="topic-card-meta">
-          <span>by <?= authorLink($row['author'], $row['user_id']) ?></span>
-          <span><?= $row['reply_count'] ?> reply<?= $row['reply_count'] !== 1 ? 's' : '' ?></span>
-          <span><?= formatDate($row['created_at']) ?></span>
-        </div>
-      </div>
-    </div>
-    <?php endwhile; ?>
-    <?php if (!$hasAny): ?>
-    <p class="empty-state">No topics yet. Be the first to post!</p>
-    <?php endif; ?>
+    <table class="topic-table">
+      <tr><th>Topic</th><th>Author</th><th>Replies</th><th>Last updated</th></tr>
+      <?php
+      $result = $db->query("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t ORDER BY t.created_at DESC");
+      while ($row = $result->fetchArray(SQLITE3_ASSOC)):
+      ?>
+      <tr>
+        <td><a href="topic.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></td>
+        <td><?= authorLink($row['author'], $row['user_id']) ?></td>
+        <td><?= $row['reply_count'] ?></td>
+        <td><?= formatDate($row['created_at']) ?></td>
+      </tr>
+      <?php endwhile; ?>
+    </table>
   </div>
 </body>
 </html>
