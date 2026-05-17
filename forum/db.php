@@ -166,7 +166,7 @@ function renderMarkdown($text) {
 
 function authorLink($author, $userId) {
   if ($userId) {
-    return '<a href="/profile?id=' . $userId . '">' . htmlspecialchars($author) . '</a>';
+    return '<a href="/profile/' . $userId . '">' . htmlspecialchars($author) . '</a>';
   }
   return htmlspecialchars($author);
 }

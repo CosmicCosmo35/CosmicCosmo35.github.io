@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     $stmt->bindValue(4, $body, SQLITE3_TEXT);
     $stmt->execute();
     $totalPages = max(1, (int)ceil(($db->querySingle("SELECT COUNT(*) FROM replies WHERE topic_id = $id")) / REPLIES_PER_PAGE));
-    header("Location: /topic/$id&page=$totalPages");
+    header("Location: /topic/$id?page=$totalPages");
     exit;
   }
 }

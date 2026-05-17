@@ -40,10 +40,10 @@
     ?>
     <div class="science-card">
       <?php if ($row['image_path']): ?>
-        <a href="science_/post?id=<?= $row['id'] ?>"><img src="uploads/projects/<?= htmlspecialchars($row['image_path']) ?>" alt="" class="science-thumb"></a>
+        <a href="/science_post/<?= $row['id'] ?>"><img src="uploads/projects/<?= htmlspecialchars($row['image_path']) ?>" alt="" class="science-thumb"></a>
       <?php endif; ?>
       <div class="science-info">
-        <h2><a href="science_/post?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
+        <h2><a href="/science_post/<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
         <p class="meta">by <?= authorLink($row['author'], $row['user_id']) ?> &middot; <?= formatDate($row['created_at']) ?></p>
         <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 200)) ?></div>
       </div>
