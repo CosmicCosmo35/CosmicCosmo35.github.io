@@ -2,8 +2,8 @@
 
 $id = (int)($_GET['id'] ?? 0);
 $topic = $db->querySingle("SELECT * FROM topics WHERE id = $id", true);
-if (!$topic) { header('Location: index.php'); exit; }
-if (!isLoggedIn() || !(currentUserId() == $topic['user_id'] || isAdmin())) { header('Location: login.php'); exit; }
+if (!$topic) { header('Location: /forum'); exit; }
+if (!isLoggedIn() || !(currentUserId() == $topic['user_id'] || isAdmin())) { header('Location: /login'); exit; }
 
 $error = '';
 
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindValue(2, $tags, SQLITE3_TEXT);
     $stmt->bindValue(3, $id, SQLITE3_INTEGER);
     $stmt->execute();
-    header("Location: topic.php?id=$id");
+    header("Location: /topic/$id");
     exit;
   }
 }
@@ -39,19 +39,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
-      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-      <a href="logout.php" class="auth-link">Logout</a>
+      <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+      <a href="/logout" class="auth-link">Logout</a>
     <?php endif; ?>
   </div>
 
   <div class="content">
-    <a href="topic.php?id=<?= $id ?>">&larr; Back to topic</a>
+    <a href="/topic/<?= $id ?>">&larr; Back to topic</a>
     <h1>Edit Topic</h1>
     <?php if ($error): ?>
       <p class="error"><?= htmlspecialchars($error) ?></p>

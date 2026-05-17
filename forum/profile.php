@@ -1,10 +1,10 @@
 <?php require __DIR__ . '/db.php';
 
 $userId = (int)($_GET['id'] ?? currentUserId());
-if (!$userId) { header('Location: index.php'); exit; }
+if (!$userId) { header('Location: /forum'); exit; }
 
 $user = $db->querySingle("SELECT id, username, created_at, avatar FROM users WHERE id = $userId", true);
-if (!$user) { header('Location: index.php'); exit; }
+if (!$user) { header('Location: /forum'); exit; }
 
 $topicCount = $db->querySingle("SELECT COUNT(*) FROM topics WHERE user_id = $userId");
 $replyCount = $db->querySingle("SELECT COUNT(*) FROM replies WHERE user_id = $userId");
@@ -23,7 +23,7 @@ if ($isOwn && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['avatar']))
     $dest = AVATAR_DIR . '/' . $userId . '.' . $ext;
     foreach (glob(AVATAR_DIR . '/' . $userId . '.*') as $f) unlink($f);
     move_uploaded_file($file['tmp_name'], $dest);
-    header("Location: profile.php?id=$userId");
+    header("Location: /profile/$userId");
     exit;
   } else {
     $uploadError = 'Invalid image (max 5MB, jpg/png/gif/webp).';
@@ -43,17 +43,17 @@ $avatarUrl = getAvatar($userId);
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
-      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-      <a href="logout.php" class="auth-link">Logout</a>
+      <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+      <a href="/logout" class="auth-link">Logout</a>
     <?php else: ?>
-      <a href="login.php" class="auth-link">Login</a>
-      <a href="register.php" class="auth-link">Register</a>
+      <a href="/login" class="auth-link">Login</a>
+      <a href="/register" class="auth-link">Register</a>
     <?php endif; ?>
   </div>
 

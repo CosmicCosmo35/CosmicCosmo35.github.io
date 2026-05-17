@@ -1,7 +1,7 @@
 <?php require __DIR__ . '/db.php';
 
 if (isLoggedIn()) {
-  header('Location: index.php');
+  header('Location: /forum');
   exit;
 }
 
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $stmt->execute();
       $_SESSION['user_id'] = $db->lastInsertRowID();
       $_SESSION['username'] = $username;
-      header('Location: index.php');
+      header('Location: /forum');
       exit;
     }
   }
@@ -48,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
-    <a href="login.php" class="auth-link">Login</a>
-    <a href="register.php" class="auth-link active">Register</a>
+    <a href="/login" class="auth-link">Login</a>
+    <a href="/register" class="auth-link active">Register</a>
   </div>
 
   <div class="content auth-page">
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="password" name="confirm" placeholder="Confirm password" required>
       <button type="submit">Register</button>
     </form>
-    <p class="auth-switch">Already have an account? <a href="login.php">Login</a></p>
+    <p class="auth-switch">Already have an account? <a href="/login">Login</a></p>
   </div>
 </body>
 </html>

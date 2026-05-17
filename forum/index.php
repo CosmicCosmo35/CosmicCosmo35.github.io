@@ -19,7 +19,7 @@ if ($tagFilter) {
   $totalPages = max(1, (int)ceil($totalTopics / TOPICS_PER_PAGE));
   $result = $db->query("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t ORDER BY t.created_at DESC LIMIT " . TOPICS_PER_PAGE . " OFFSET $offset");
 }
-$urlBase = 'index.php' . ($tagFilter ? '?tag=' . urlencode($tagFilter) . '&' : '?');
+$urlBase = '/forum' . ($tagFilter ? '?tag=' . urlencode($tagFilter) . '&' : '?');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,24 +33,24 @@ $urlBase = 'index.php' . ($tagFilter ? '?tag=' . urlencode($tagFilter) . '&' : '
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php" class="active">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum" class="active">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
-      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-      <a href="logout.php" class="auth-link">Logout</a>
+      <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+      <a href="/logout" class="auth-link">Logout</a>
     <?php else: ?>
-      <a href="login.php" class="auth-link">Login</a>
-      <a href="register.php" class="auth-link">Register</a>
+      <a href="/login" class="auth-link">Login</a>
+      <a href="/register" class="auth-link">Register</a>
     <?php endif; ?>
   </div>
 
   <div class="content">
     <h1>Forum<?= $tagFilter ? ' - Tag: ' . htmlspecialchars($tagFilter) : '' ?></h1>
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <a href="post.php" class="btn" style="margin-bottom:0">+ New Topic</a>
+      <a href="/post" class="btn" style="margin-bottom:0">+ New Topic</a>
       <span class="meta" style="margin-bottom:0"><?= $totalTopics ?> topic<?= $totalTopics !== 1 ? 's' : '' ?></span>
     </div>
 
@@ -62,7 +62,7 @@ $urlBase = 'index.php' . ($tagFilter ? '?tag=' . urlencode($tagFilter) . '&' : '
         $hasAny = true;
       ?>
       <tr>
-        <td><a href="topic.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></td>
+        <td><a href="/topic/<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></td>
         <td><?= renderTags($row['tags']) ?></td>
         <td><?= authorLink($row['author'], $row['user_id']) ?></td>
         <td><?= $row['reply_count'] ?></td>

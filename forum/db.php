@@ -70,7 +70,7 @@ define('MAX_REPLY_LENGTH', 300);
 define('MAX_TITLE_LENGTH', 60);
 define('MAX_USERNAME_LENGTH', 15);
 define('MAX_ANNOUNCEMENT_REPLIES', 2);
-define('MAX_TAGS_LENGTH', 100);
+define('MAX_TAGS_LENGTH', 50);
 define('TOPICS_PER_PAGE', 20);
 define('REPLIES_PER_PAGE', 10);
 define('UPLOAD_DIR', __DIR__ . '/uploads');
@@ -166,7 +166,7 @@ function renderMarkdown($text) {
 
 function authorLink($author, $userId) {
   if ($userId) {
-    return '<a href="profile.php?id=' . $userId . '">' . htmlspecialchars($author) . '</a>';
+    return '<a href="/profile?id=' . $userId . '">' . htmlspecialchars($author) . '</a>';
   }
   return htmlspecialchars($author);
 }

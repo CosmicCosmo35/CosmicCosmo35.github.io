@@ -1,0 +1,18 @@
+RewriteEngine On
+
+RewriteRule ^post$ forum/post.php [L]
+RewriteRule ^login$ forum/login.php [L]
+RewriteRule ^register$ forum/register.php [L]
+RewriteRule ^logout$ forum/logout.php [L]
+RewriteRule ^search$ forum/search.php [L,QSA]
+RewriteRule ^profile$ forum/profile.php [L,QSA]
+RewriteRule ^post_announcement$ forum/post_announcement.php [L]
+RewriteRule ^post_science$ forum/post_science.php [L]
+RewriteRule ^edit_reply/(\d+)$ forum/edit_reply.php?id=$1 [L]
+RewriteRule ^edit_topic/(\d+)$ forum/edit_topic.php?id=$1 [L]
+RewriteRule ^topic/(\d+)$ forum/topic.php?id=$1 [L,QSA]
+RewriteRule ^announcement/(\d+)$ forum/announcement.php?id=$1 [L]
+RewriteRule ^science_post/(\d+)$ forum/science_post.php?id=$1 [L]
+RewriteRule ^forum$ forum/index.php [L]
+RewriteRule ^science_talk$ forum/science_talk.php [L]
+RewriteRule ^announcements$ forum/announcements.php [L]

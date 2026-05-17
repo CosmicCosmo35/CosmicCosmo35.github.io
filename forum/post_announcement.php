@@ -1,6 +1,6 @@
 <?php require __DIR__ . '/db.php';
 
-if (!isAdmin()) { header('Location: announcements.php'); exit; }
+if (!isAdmin()) { header('Location: /announcements'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title'] ?? '');
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindValue(4, $body, SQLITE3_TEXT);
     $stmt->execute();
     $id = $db->lastInsertRowID();
-    header("Location: announcement.php?id=$id");
+    header("Location: /announcement/$id");
     exit;
   }
 }
@@ -31,17 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
-    <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-    <a href="logout.php" class="auth-link">Logout</a>
+    <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+    <a href="/logout" class="auth-link">Logout</a>
   </div>
 
   <div class="content">
-    <a href="announcements.php">&larr; Back to Announcements</a>
+    <a href="/announcements">&larr; Back to Announcements</a>
     <h1>Create New Announcement</h1>
 
     <form method="post" class="reply-form">

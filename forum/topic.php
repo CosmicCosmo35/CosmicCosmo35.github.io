@@ -2,10 +2,10 @@
 
 $id = (int)($_GET['id'] ?? 0);
 $topic = $db->querySingle("SELECT * FROM topics WHERE id = $id", true);
-if (!$topic) { header('Location: index.php'); exit; }
+if (!$topic) { header('Location: /forum'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
-  if (!isLoggedIn()) { header('Location: login.php'); exit; }
+  if (!isLoggedIn()) { header('Location: /login'); exit; }
   $author = currentUser();
   $body = trim($_POST['body']);
   $userId = currentUserId();
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     $stmt->bindValue(4, $body, SQLITE3_TEXT);
     $stmt->execute();
     $totalPages = max(1, (int)ceil(($db->querySingle("SELECT COUNT(*) FROM replies WHERE topic_id = $id")) / REPLIES_PER_PAGE));
-    header("Location: topic.php?id=$id&page=$totalPages");
+    header("Location: /topic/$id&page=$totalPages");
     exit;
   }
 }
@@ -28,7 +28,7 @@ if (isset($_GET['delete_reply'])) {
   $reply = $db->querySingle("SELECT * FROM replies WHERE id = $rid", true);
   if ($reply && $reply['topic_id'] == $id && isLoggedIn() && (currentUserId() == $reply['user_id'] || isAdmin())) {
     $db->exec("DELETE FROM replies WHERE id = $rid");
-    header("Location: topic.php?id=$id");
+    header("Location: /topic/$id");
     exit;
   }
 }
@@ -37,7 +37,7 @@ if (isset($_GET['delete_topic'])) {
   if (isLoggedIn() && (currentUserId() == $topic['user_id'] || isAdmin())) {
     $db->exec("DELETE FROM replies WHERE topic_id = $id");
     $db->exec("DELETE FROM topics WHERE id = $id");
-    header("Location: index.php");
+    header("Location: /forum");
     exit;
   }
 }
@@ -62,29 +62,29 @@ $replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY creat
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
-      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-      <a href="logout.php" class="auth-link">Logout</a>
+      <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+      <a href="/logout" class="auth-link">Logout</a>
     <?php else: ?>
-      <a href="login.php" class="auth-link">Login</a>
-      <a href="register.php" class="auth-link">Register</a>
+      <a href="/login" class="auth-link">Login</a>
+      <a href="/register" class="auth-link">Register</a>
     <?php endif; ?>
   </div>
 
   <div class="content">
-    <a href="index.php">&larr; Back to Forum</a>
+    <a href="/forum">&larr; Back to Forum</a>
     <h1><?= htmlspecialchars($topic['title']) ?></h1>
     <p class="meta">
       by <?= authorLink($topic['author'], $topic['user_id']) ?> &middot; <?= formatDate($topic['created_at']) ?>
       <?= renderTags($topic['tags']) ?>
       <?php if ($canModify): ?>
-        &middot; <a href="edit_topic.php?id=<?= $id ?>" style="color:#222">Edit</a>
-        &middot; <a href="topic.php?id=<?= $id ?>&delete_topic=1" style="color:#d33" onclick="return confirm('Delete this topic and all replies?')">Delete</a>
+        &middot; <a href="/edit_topic/<?= $id ?>" style="color:#222">Edit</a>
+        &middot; <a href="/topic/<?= $id ?>?delete_topic=1" style="color:#d33" onclick="return confirm('Delete this topic and all replies?')">Delete</a>
       <?php endif; ?>
     </p>
 
@@ -102,8 +102,8 @@ $replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY creat
         <span class="meta"><?= formatDate($reply['created_at']) ?></span>
         <?php if ($canEditReply): ?>
           <span class="meta">
-            &middot; <a href="edit_reply.php?id=<?= $reply['id'] ?>" style="color:#222">Edit</a>
-            &middot; <a href="topic.php?id=<?= $id ?>&delete_reply=<?= $reply['id'] ?>" style="color:#d33" onclick="return confirm('Delete this reply?')">Delete</a>
+            &middot; <a href="/edit_reply/<?= $reply['id'] ?>" style="color:#222">Edit</a>
+            &middot; <a href="/topic/<?= $id ?>?delete_reply=<?= $reply['id'] ?>" style="color:#d33" onclick="return confirm('Delete this reply?')">Delete</a>
           </span>
         <?php endif; ?>
         <div class="reply-body"><?= renderMarkdown($reply['body']) ?></div>
@@ -114,7 +114,7 @@ $replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY creat
       <?php endif; ?>
     </div>
 
-    <?= paginationLinks($page, $totalPages, 'topic.php?id=' . $id . '&') ?>
+    <?= paginationLinks($page, $totalPages, '/topic/' . $id . '?') ?>
 
     <?php if (isLoggedIn()): ?>
     <form method="post" class="reply-form">
@@ -125,7 +125,7 @@ $replies = $db->query("SELECT * FROM replies WHERE topic_id = $id ORDER BY creat
       <button type="submit">Post Reply</button>
     </form>
     <?php else: ?>
-    <p class="login-prompt"><a href="login.php">Login</a> to post a reply.</p>
+    <p class="login-prompt"><a href="/login">Login</a> to post a reply.</p>
     <?php endif; ?>
   </div>
   <script src="char-count.js"></script>

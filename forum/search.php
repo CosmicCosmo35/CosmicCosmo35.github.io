@@ -23,17 +23,17 @@ if ($q) {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="active auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="active auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
-      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-      <a href="logout.php" class="auth-link">Logout</a>
+      <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+      <a href="/logout" class="auth-link">Logout</a>
     <?php else: ?>
-      <a href="login.php" class="auth-link">Login</a>
-      <a href="register.php" class="auth-link">Register</a>
+      <a href="/login" class="auth-link">Login</a>
+      <a href="/register" class="auth-link">Register</a>
     <?php endif; ?>
   </div>
 
@@ -52,7 +52,7 @@ if ($q) {
         <tr><th>Topic</th><th>Tags</th><th>Author</th><th>Replies</th><th>Last updated</th></tr>
         <?php foreach ($results as $row): ?>
         <tr>
-          <td><a href="topic.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></td>
+          <td><a href="/topic/<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></td>
           <td><?= renderTags($row['tags']) ?></td>
           <td><?= authorLink($row['author'], $row['user_id']) ?></td>
           <td><?= $row['reply_count'] ?></td>

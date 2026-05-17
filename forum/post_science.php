@@ -1,6 +1,6 @@
 <?php require __DIR__ . '/db.php';
 
-if (!isLoggedIn()) { header('Location: login.php'); exit; }
+if (!isLoggedIn()) { header('Location: /login'); exit; }
 
 $error = '';
 $imageName = null;
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindValue(5, $imageName, SQLITE3_TEXT);
     $stmt->execute();
     $id = $db->lastInsertRowID();
-    header("Location: science_post.php?id=$id");
+    header("Location: /science_post/$id");
     exit;
   }
 }
@@ -41,17 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
-    <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-    <a href="logout.php" class="auth-link">Logout</a>
+    <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+    <a href="/logout" class="auth-link">Logout</a>
   </div>
 
   <div class="content">
-    <a href="science_talk.php">&larr; Back to Science Talk</a>
+    <a href="/science_talk">&larr; Back to Science Talk</a>
     <h1>New Science Post</h1>
     <?php if ($error): ?>
       <p class="error"><?= htmlspecialchars($error) ?></p>

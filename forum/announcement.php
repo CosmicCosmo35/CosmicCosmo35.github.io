@@ -2,13 +2,13 @@
 
 $id = (int)($_GET['id'] ?? 0);
 $announcement = $db->querySingle("SELECT * FROM announcements WHERE id = $id", true);
-if (!$announcement) { header('Location: announcements.php'); exit; }
+if (!$announcement) { header('Location: /announcements'); exit; }
 
 $replyCount = $db->querySingle("SELECT COUNT(*) FROM announcement_replies WHERE announcement_id = $id");
 $myReplyCount = isLoggedIn() ? $db->querySingle("SELECT COUNT(*) FROM announcement_replies WHERE announcement_id = $id AND user_id = " . currentUserId()) : 0;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
-  if (!isLoggedIn()) { header('Location: login.php'); exit; }
+  if (!isLoggedIn()) { header('Location: /login'); exit; }
   if ($myReplyCount >= MAX_ANNOUNCEMENT_REPLIES) {
     $error = 'You have reached the maximum of ' . MAX_ANNOUNCEMENT_REPLIES . ' replies per announcement.';
   } else {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
       $stmt->bindValue(4, $body, SQLITE3_TEXT);
       $stmt->execute();
-      header("Location: announcement.php?id=$id");
+      header("Location: /announcement/$id");
       exit;
     }
   }
@@ -41,22 +41,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php" class="active">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements" class="active">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
-      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-      <a href="logout.php" class="auth-link">Logout</a>
+      <a href="/profile" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+      <a href="/logout" class="auth-link">Logout</a>
     <?php else: ?>
-      <a href="login.php" class="auth-link">Login</a>
-      <a href="register.php" class="auth-link">Register</a>
+      <a href="/login" class="auth-link">Login</a>
+      <a href="/register" class="auth-link">Register</a>
     <?php endif; ?>
   </div>
 
   <div class="content">
-    <a href="announcements.php">&larr; Back to Announcements</a>
+    <a href="/announcements">&larr; Back to Announcements</a>
     <h1><?= htmlspecialchars($announcement['title']) ?></h1>
     <p class="meta">by <?= authorLink($announcement['author'], $announcement['user_id']) ?> &middot; <?= formatDate($announcement['created_at']) ?></p>
     <div class="body"><?= renderMarkdown($announcement['body']) ?></div>
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       <p class="login-prompt">You've used all <?= MAX_ANNOUNCEMENT_REPLIES ?> of your replies on this announcement.</p>
       <?php endif; ?>
     <?php else: ?>
-      <p class="login-prompt"><a href="login.php">Login</a> to post a reply.</p>
+      <p class="login-prompt"><a href="/login">Login</a> to post a reply.</p>
     <?php endif; ?>
   </div>
   <script src="char-count.js"></script>

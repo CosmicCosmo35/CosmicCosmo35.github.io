@@ -1,7 +1,7 @@
 <?php require __DIR__ . '/db.php';
 
 if (isLoggedIn()) {
-  header('Location: index.php');
+  header('Location: /forum');
   exit;
 }
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($user && password_verify($password, $user['password_hash'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
-    header('Location: index.php');
+    header('Location: /forum');
     exit;
   } else {
     $error = 'Invalid username or password.';
@@ -36,13 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
-    <a href="science_talk.php">Science Talk</a>
-    <a href="announcements.php">Announcements</a>
-    <a href="search.php" class="auth-link">Search</a>
+    <a href="/forum">Forum</a>
+    <a href="/science_talk">Science Talk</a>
+    <a href="/announcements">Announcements</a>
+    <a href="/search" class="auth-link">Search</a>
     <span class="spacer"></span>
-    <a href="login.php" class="auth-link active">Login</a>
-    <a href="register.php" class="auth-link">Register</a>
+    <a href="/login" class="auth-link active">Login</a>
+    <a href="/register" class="auth-link">Register</a>
   </div>
 
   <div class="content auth-page">
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="password" name="password" placeholder="Password" required>
       <button type="submit">Login</button>
     </form>
-    <p class="auth-switch">Don't have an account? <a href="register.php">Register</a></p>
+    <p class="auth-switch">Don't have an account? <a href="/register">Register</a></p>
   </div>
 </body>
 </html>
