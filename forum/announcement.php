@@ -54,14 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <?php endif; ?>
   </div>
 
-  <div class="content">
-    <a href="announcements.php">&larr; Back to Announcements</a>
-    <h1><?= htmlspecialchars($announcement['title']) ?></h1>
-    <p class="meta">by <?= authorLink($announcement['author'], $announcement['user_id']) ?> &middot; <?= formatDate($announcement['created_at']) ?></p>
-    <div class="body"><?= renderMarkdown($announcement['body']) ?></div>
+  <div class="content announcement-layout">
+    <div class="topic-main">
+      <a href="announcements.php" class="back-link">&larr; Back to Announcements</a>
+      <h1><?= htmlspecialchars($announcement['title']) ?></h1>
+      <div class="body"><?= renderMarkdown($announcement['body']) ?></div>
 
-    <h2 class="reply-heading">Replies (<?= $replyCount ?>)</h2>
-    <div class="replies">
+      <h2 class="reply-heading">Replies (<?= $replyCount ?>)</h2>
       <?php
       $replies = $db->query("SELECT * FROM announcement_replies WHERE announcement_id = $id ORDER BY created_at ASC");
       $hasReplies = false;
@@ -69,31 +68,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
         $hasReplies = true;
       ?>
       <div class="reply">
-        <strong><?= authorLink($reply['author'], $reply['user_id']) ?></strong>
-        <span class="meta"><?= formatDate($reply['created_at']) ?></span>
-        <div class="reply-body"><?= renderMarkdown($reply['body']) ?></div>
+        <div class="reply-side">
+          <?php if ($reply['user_id'] && $a = getAvatar($reply['user_id'])): ?>
+            <img src="<?= $a ?>" alt="" class="reply-avatar">
+          <?php else: ?>
+            <div class="reply-avatar placeholder"><?= strtoupper(($reply['author'] ?: 'A')[0]) ?></div>
+          <?php endif; ?>
+        </div>
+        <div class="reply-body-wrap">
+          <div class="reply-head">
+            <strong><?= authorLink($reply['author'], $reply['user_id']) ?></strong>
+            <span class="meta"><?= formatDate($reply['created_at']) ?></span>
+          </div>
+          <div class="reply-body"><?= renderMarkdown($reply['body']) ?></div>
+        </div>
       </div>
       <?php endwhile; ?>
       <?php if (!$hasReplies): ?>
-      <p>No replies yet.</p>
+      <p class="empty-state">No replies yet.</p>
+      <?php endif; ?>
+
+      <?php if (isLoggedIn()): ?>
+        <?php if ($myReplyCount < MAX_ANNOUNCEMENT_REPLIES): ?>
+        <form method="post" class="reply-form">
+          <h3>Post a reply (<?= $myReplyCount ?>/<?= MAX_ANNOUNCEMENT_REPLIES ?> used)</h3>
+          <textarea name="body" placeholder="Write your reply... (max <?= MAX_REPLY_LENGTH ?> characters)" required maxlength="<?= MAX_REPLY_LENGTH ?>"></textarea>
+          <div class="reply-form-footer">
+            <span class="char-count">0 / <?= MAX_REPLY_LENGTH ?></span>
+            <span class="meta"><?= POST_DELAY ?>s delay</span>
+          </div>
+          <button type="submit">Post Reply</button>
+        </form>
+        <?php else: ?>
+        <p class="login-prompt">You've used all <?= MAX_ANNOUNCEMENT_REPLIES ?> of your replies on this announcement.</p>
+        <?php endif; ?>
+      <?php else: ?>
+      <p class="login-prompt"><a href="login.php">Login</a> to post a reply.</p>
       <?php endif; ?>
     </div>
 
-    <?php if (isLoggedIn()): ?>
-      <?php if ($myReplyCount < MAX_ANNOUNCEMENT_REPLIES): ?>
-      <form method="post" class="reply-form">
-        <h3>Post a reply (<?= $myReplyCount ?>/<?= MAX_ANNOUNCEMENT_REPLIES ?> used)</h3>
-        <textarea name="body" placeholder="Write your reply... (max <?= MAX_REPLY_LENGTH ?> characters)" required maxlength="<?= MAX_REPLY_LENGTH ?>"></textarea>
-        <span class="char-count">0 / <?= MAX_REPLY_LENGTH ?></span>
-        <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>
-        <button type="submit">Post Reply</button>
-      </form>
-      <?php else: ?>
-      <p class="login-prompt">You've used all <?= MAX_ANNOUNCEMENT_REPLIES ?> of your replies on this announcement.</p>
+    <div class="topic-sidebar">
+      <?php
+      $annUser = null;
+      $annAvatar = false;
+      if ($announcement['user_id']) {
+        $annUser = $db->querySingle("SELECT id, username FROM users WHERE id = " . $announcement['user_id'], true);
+        if ($annUser) $annAvatar = getAvatar($annUser['id']);
+      }
+      ?>
+      <?php if ($annUser): ?>
+      <div class="sidebar-card">
+        <h3 class="sidebar-title">Author</h3>
+        <div class="sidebar-user">
+          <?php if ($annAvatar): ?>
+            <img src="<?= $annAvatar ?>" alt="" class="sidebar-avatar">
+          <?php else: ?>
+            <div class="sidebar-avatar placeholder"><?= strtoupper($annUser['username'][0]) ?></div>
+          <?php endif; ?>
+          <div>
+            <strong><?= htmlspecialchars($annUser['username']) ?></strong>
+            <a href="profile.php?id=<?= $annUser['id'] ?>" class="sidebar-link">View profile &rarr;</a>
+          </div>
+        </div>
+      </div>
       <?php endif; ?>
-    <?php else: ?>
-      <p class="login-prompt"><a href="login.php">Login</a> to post a reply.</p>
-    <?php endif; ?>
+
+      <div class="sidebar-card">
+        <h3 class="sidebar-title">Info</h3>
+        <div class="sidebar-info">
+          <div class="info-row">
+            <span class="info-label">Posted</span>
+            <span class="info-value"><?= formatDate($announcement['created_at']) ?></span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Replies</span>
+            <span class="info-value"><?= $replyCount ?></span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="char-count.js"></script>
 </body>

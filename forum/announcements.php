@@ -25,10 +25,12 @@
   </div>
 
   <div class="content">
-    <h1>Announcements</h1>
-    <?php if (isAdmin()): ?>
-      <a href="post_announcement.php" class="btn">+ New Announcement</a>
-    <?php endif; ?>
+    <div class="page-head">
+      <h1>Announcements</h1>
+      <?php if (isAdmin()): ?>
+        <a href="post_announcement.php" class="btn">+ New Announcement</a>
+      <?php endif; ?>
+    </div>
 
     <?php
     $result = $db->query("SELECT a.*, (SELECT COUNT(*) FROM announcement_replies WHERE announcement_id = a.id) AS reply_count FROM announcements a ORDER BY a.created_at DESC");

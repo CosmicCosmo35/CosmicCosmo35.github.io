@@ -25,11 +25,17 @@
   </div>
 
   <div class="content">
-    <h1>Science Talk</h1>
-    <p class="meta">Share your projects and photos!</p>
-    <?php if (isLoggedIn()): ?>
-      <a href="post_science.php" class="btn">+ New Post</a>
-    <?php endif; ?>
+    <div class="page-head">
+      <div>
+        <h1>Science Talk</h1>
+        <p class="meta" style="margin:0">Share your projects and photos!</p>
+      </div>
+      <?php if (isLoggedIn()): ?>
+        <a href="post_science.php" class="btn">+ New Post</a>
+      <?php else: ?>
+        <a href="login.php" class="btn">+ New Post</a>
+      <?php endif; ?>
+    </div>
 
     <?php
     $result = $db->query("SELECT * FROM science_posts ORDER BY created_at DESC");
