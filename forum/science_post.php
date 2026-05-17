@@ -10,11 +10,11 @@ if (!$post) { header('Location: /science_talk'); exit; }
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($post['title']) ?> - Science Talk</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/forum/style.css">
 </head>
 <body>
   <div class="topbar">
-    <img src="../Logo.png" alt="Logo">
+    <img src="/Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="/forum">Forum</a>
     <a href="/science_talk">Science Talk</a>
@@ -37,7 +37,7 @@ if (!$post) { header('Location: /science_talk'); exit; }
 
     <?php if ($post['image_path']): ?>
       <div class="science-image">
-        <img src="uploads/projects/<?= htmlspecialchars($post['image_path']) ?>" alt="">
+        <img src="/forum/uploads/projects/<?= htmlspecialchars($post['image_path']) ?>" alt="">
       </div>
     <?php endif; ?>
 

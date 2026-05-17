@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Science Talk - Awesome Science</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/forum/style.css">
 </head>
 <body>
   <div class="topbar">
-    <img src="../Logo.png" alt="Logo">
+    <img src="/Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="/forum">Forum</a>
     <a href="/science_talk" class="active">Science Talk</a>
@@ -40,7 +40,7 @@
     ?>
     <div class="science-card">
       <?php if ($row['image_path']): ?>
-        <a href="/science_post/<?= $row['id'] ?>"><img src="uploads/projects/<?= htmlspecialchars($row['image_path']) ?>" alt="" class="science-thumb"></a>
+        <a href="/science_post/<?= $row['id'] ?>"><img src="/forum/uploads/projects/<?= htmlspecialchars($row['image_path']) ?>" alt="" class="science-thumb"></a>
       <?php endif; ?>
       <div class="science-info">
         <h2><a href="/science_post/<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>

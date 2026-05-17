@@ -27,11 +27,11 @@ $urlBase = '/forum' . ($tagFilter ? '?tag=' . urlencode($tagFilter) . '&' : '?')
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forum - Awesome Science</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/forum/style.css">
 </head>
 <body>
   <div class="topbar">
-    <img src="../Logo.png" alt="Logo">
+    <img src="/Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
     <a href="/forum" class="active">Forum</a>
     <a href="/science_talk">Science Talk</a>

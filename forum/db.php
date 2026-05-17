@@ -174,7 +174,7 @@ function authorLink($author, $userId) {
 function getAvatar($userId) {
   $path = AVATAR_DIR . '/' . (int)$userId . '.jpg';
   if (file_exists($path)) {
-    return 'uploads/avatars/' . (int)$userId . '.jpg?t=' . filemtime($path);
+    return '/forum/uploads/avatars/' . (int)$userId . '.jpg?t=' . filemtime($path);
   }
   return false;
 }
