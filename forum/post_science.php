@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="index.php">Forum</a>
     <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php">Announcements</a>
+    <a href="search.php" class="auth-link">Search</a>
     <span class="spacer"></span>
     <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
     <a href="logout.php" class="auth-link">Logout</a>

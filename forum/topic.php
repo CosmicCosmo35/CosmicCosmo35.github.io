@@ -21,6 +21,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     exit;
   }
 }
+
+if (isset($_GET['delete_reply'])) {
+  $rid = (int)$_GET['delete_reply'];
+  $reply = $db->querySingle("SELECT * FROM replies WHERE id = $rid", true);
+  if ($reply && $reply['topic_id'] == $id && isLoggedIn() && (currentUserId() == $reply['user_id'] || isAdmin())) {
+    $db->exec("DELETE FROM replies WHERE id = $rid");
+    header("Location: topic.php?id=$id");
+    exit;
+  }
+}
+
+if (isset($_GET['delete_topic'])) {
+  if (isLoggedIn() && (currentUserId() == $topic['user_id'] || isAdmin())) {
+    $db->exec("DELETE FROM replies WHERE topic_id = $id");
+    $db->exec("DELETE FROM topics WHERE id = $id");
+    header("Location: index.php");
+    exit;
+  }
+}
+
+$canModify = isLoggedIn() && (currentUserId() == $topic['user_id'] || isAdmin());
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <a href="index.php">Forum</a>
     <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php">Announcements</a>
+    <a href="search.php" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
       <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
@@ -50,7 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
   <div class="content">
     <a href="index.php">&larr; Back to Forum</a>
     <h1><?= htmlspecialchars($topic['title']) ?></h1>
-    <p class="meta">by <?= authorLink($topic['author'], $topic['user_id']) ?> &middot; <?= formatDate($topic['created_at']) ?></p>
+    <p class="meta">
+      by <?= authorLink($topic['author'], $topic['user_id']) ?> &middot; <?= formatDate($topic['created_at']) ?>
+      <?= renderTags($topic['tags']) ?>
+      <?php if ($canModify): ?>
+        &middot; <a href="edit_topic.php?id=<?= $id ?>" style="color:#222">Edit</a>
+        &middot; <a href="topic.php?id=<?= $id ?>&delete_topic=1" style="color:#d33" onclick="return confirm('Delete this topic and all replies?')">Delete</a>
+      <?php endif; ?>
+    </p>
 
     <div class="replies">
       <?php
@@ -58,10 +87,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
       $hasReplies = false;
       while ($reply = $replies->fetchArray(SQLITE3_ASSOC)):
         $hasReplies = true;
+        $canEditReply = isLoggedIn() && (currentUserId() == $reply['user_id'] || isAdmin());
       ?>
       <div class="reply">
         <strong><?= authorLink($reply['author'], $reply['user_id']) ?></strong>
         <span class="meta"><?= formatDate($reply['created_at']) ?></span>
+        <?php if ($canEditReply): ?>
+          <span class="meta">
+            &middot; <a href="edit_reply.php?id=<?= $reply['id'] ?>" style="color:#222">Edit</a>
+            &middot; <a href="topic.php?id=<?= $id ?>&delete_reply=<?= $reply['id'] ?>" style="color:#d33" onclick="return confirm('Delete this reply?')">Delete</a>
+          </span>
+        <?php endif; ?>
         <div class="reply-body"><?= renderMarkdown($reply['body']) ?></div>
       </div>
       <?php endwhile; ?>

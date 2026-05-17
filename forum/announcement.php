@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['body'])) {
     <a href="index.php">Forum</a>
     <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php" class="active">Announcements</a>
+    <a href="search.php" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
       <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>

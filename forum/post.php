@@ -1,18 +1,19 @@
 <?php require __DIR__ . '/db.php';
-
 if (!isLoggedIn()) { header('Location: login.php'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = trim($_POST['title'] ?? '');
   $author = currentUser();
   $body = trim($_POST['body'] ?? '');
+  $tags = trim($_POST['tags'] ?? '');
   $userId = currentUserId();
   if ($title && $body && strlen($title) <= MAX_TITLE_LENGTH && strlen($body) <= MAX_BODY_LENGTH) {
     sleep(POST_DELAY);
-    $stmt = $db->prepare("INSERT INTO topics (title, author, user_id) VALUES (?, ?, ?)");
+    $stmt = $db->prepare("INSERT INTO topics (title, author, user_id, tags) VALUES (?, ?, ?, ?)");
     $stmt->bindValue(1, $title, SQLITE3_TEXT);
     $stmt->bindValue(2, $author, SQLITE3_TEXT);
     $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
+    $stmt->bindValue(4, $tags, SQLITE3_TEXT);
     $stmt->execute();
     $topicId = $db->lastInsertRowID();
 
@@ -43,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="index.php">Forum</a>
     <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php">Announcements</a>
+    <a href="search.php" class="auth-link">Search</a>
     <span class="spacer"></span>
     <?php if (isLoggedIn()): ?>
       <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
@@ -59,8 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post" class="reply-form">
       <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
-      <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
+      <input type="text" name="tags" placeholder="Tags (comma-separated, e.g. physics, chemistry)" maxlength="100">
       <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
+      <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <p class="meta" style="margin-top:-8px"><?= POST_DELAY ?>s delay after posting.</p>
       <button type="submit">Create Topic</button>
     </form>

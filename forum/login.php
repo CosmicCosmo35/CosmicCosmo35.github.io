@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <a href="index.php">Forum</a>
     <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php">Announcements</a>
+    <a href="search.php" class="auth-link">Search</a>
     <span class="spacer"></span>
     <a href="login.php" class="auth-link active">Login</a>
     <a href="register.php" class="auth-link">Register</a>

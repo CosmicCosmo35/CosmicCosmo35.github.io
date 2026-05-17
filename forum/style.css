@@ -221,6 +221,12 @@ a.user-badge:hover { background: #ddd; }
 }
 .avatar-form button:hover { background: #444; }
 
+.tag {
+  display: inline-block; padding: 1px 6px; margin: 1px 2px;
+  background: #eee; border-radius: 3px; font-size: 0.75rem;
+  color: #555; text-decoration: none;
+}
+.tag:hover { background: #ddd; }
 .file-label { font-size: 0.9rem; color: #555; }
 .file-label input { font-size: 0.9rem; }
 

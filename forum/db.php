@@ -16,9 +16,11 @@ $db->exec("CREATE TABLE IF NOT EXISTS topics (
   title TEXT NOT NULL,
   author TEXT NOT NULL DEFAULT 'Anonymous',
   user_id INTEGER,
+  tags TEXT DEFAULT '',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
 )");
+@$db->exec("ALTER TABLE topics ADD COLUMN tags TEXT DEFAULT ''");
 
 $db->exec("CREATE TABLE IF NOT EXISTS replies (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,6 +90,16 @@ function currentUserId() {
 
 function isAdmin() {
   return isLoggedIn() && strtolower($_SESSION['username']) === 'cosmo';
+}
+
+function renderTags($tags) {
+  if (!$tags) return '';
+  $parts = array_map('trim', explode(',', $tags));
+  $out = '';
+  foreach ($parts as $t) {
+    if ($t) $out .= '<a href="index.php?tag=' . urlencode($t) . '" class="tag">' . htmlspecialchars($t) . '</a> ';
+  }
+  return $out;
 }
 
 function formatDate($datetime) {
