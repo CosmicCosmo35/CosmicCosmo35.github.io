@@ -25,11 +25,13 @@
   </div>
 
   <div class="content">
-    <div class="page-actions">
+    <div class="page-head">
       <h1>Announcements</h1>
-      <?php if (isAdmin()): ?>
-        <a href="post_announcement.php" class="btn">+ New Announcement</a>
-      <?php endif; ?>
+      <div class="page-head-right">
+        <?php if (isAdmin()): ?>
+          <a href="post_announcement.php" class="btn">+ New Announcement</a>
+        <?php endif; ?>
+      </div>
     </div>
 
     <div class="announcement-list">
@@ -41,7 +43,7 @@
       ?>
       <div class="announcement-item">
         <h2><a href="announcement.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
-        <p class="meta">by <?= authorLink($row['author'], $row['user_id']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?> replies</p>
+        <p class="announcement-meta">by <?= authorLink($row['author'], $row['user_id']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?> replies</p>
         <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 250)) ?></div>
       </div>
       <?php endwhile; ?>

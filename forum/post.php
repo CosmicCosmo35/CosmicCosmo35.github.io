@@ -1,5 +1,4 @@
 <?php require __DIR__ . '/db.php';
-
 if (!isLoggedIn()) { header('Location: login.php'); exit; }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,14 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
     $stmt->execute();
     $topicId = $db->lastInsertRowID();
-
     $stmt = $db->prepare("INSERT INTO replies (topic_id, author, user_id, body) VALUES (?, ?, ?, ?)");
     $stmt->bindValue(1, $topicId, SQLITE3_INTEGER);
     $stmt->bindValue(2, $author, SQLITE3_TEXT);
     $stmt->bindValue(3, $userId, SQLITE3_INTEGER);
     $stmt->bindValue(4, $body, SQLITE3_TEXT);
     $stmt->execute();
-
     header("Location: topic.php?id=$topicId");
     exit;
   }
@@ -40,28 +37,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="topbar">
     <img src="../Logo.png" alt="Logo">
     <a href="../index.html">Home</a>
-    <a href="index.php">Forum</a>
+    <a href="index.php" class="active">Forum</a>
     <a href="science_talk.php">Science Talk</a>
     <a href="announcements.php">Announcements</a>
     <span class="spacer"></span>
-    <?php if (isLoggedIn()): ?>
-      <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
-      <a href="logout.php" class="auth-link">Logout</a>
-    <?php else: ?>
-      <a href="login.php" class="auth-link">Login</a>
-      <a href="register.php" class="auth-link">Register</a>
-    <?php endif; ?>
+    <a href="profile.php" class="user-badge"><?= htmlspecialchars(currentUser()) ?></a>
+    <a href="logout.php" class="auth-link">Logout</a>
   </div>
 
   <div class="content">
     <div class="breadcrumb"><a href="index.php">Forum</a> &raquo; New Topic</div>
-    <h1>Create New Topic</h1>
+    <h1 style="font-size:16px;margin-bottom:10px">Create New Topic</h1>
 
     <form method="post" class="reply-form">
       <input type="text" name="title" placeholder="Topic title" required maxlength="<?= MAX_TITLE_LENGTH ?>">
-      <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
       <textarea name="body" placeholder="Write your post... (max <?= MAX_BODY_LENGTH ?> characters)" required maxlength="<?= MAX_BODY_LENGTH ?>"></textarea>
       <div class="reply-form-footer">
+        <span class="char-count">0 / <?= MAX_BODY_LENGTH ?></span>
         <span class="meta"><?= POST_DELAY ?>s delay</span>
       </div>
       <button type="submit">Create Topic</button>
