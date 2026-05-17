@@ -25,10 +25,10 @@
   </div>
 
   <div class="content">
-    <div class="page-actions">
+    <div class="page-head">
       <div>
         <h1>Science Talk</h1>
-        <p class="meta" style="margin:2px 0 0">Share your projects and photos!</p>
+        <p class="meta" style="margin:0">Share your projects and photos!</p>
       </div>
       <?php if (isLoggedIn()): ?>
         <a href="post_science.php" class="btn">+ New Post</a>
@@ -50,12 +50,12 @@
       <div class="science-info">
         <h2><a href="science_post.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
         <p class="meta">by <?= authorLink($row['author'], $row['user_id']) ?> &middot; <?= formatDate($row['created_at']) ?></p>
-        <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 250)) ?></div>
+        <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 200)) ?></div>
       </div>
     </div>
     <?php endwhile; ?>
     <?php if (!$hasAny): ?>
-    <div class="science-card"><p>No posts yet.</p></div>
+    <p>No posts yet.</p>
     <?php endif; ?>
   </div>
 </body>

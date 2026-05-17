@@ -56,43 +56,41 @@ $avatarUrl = getAvatar($userId);
     <?php endif; ?>
   </div>
 
-  <div class="content" style="max-width:520px">
-    <div class="profile-card">
-      <div class="profile-header">
-        <div class="profile-avatar">
-          <?php if ($avatarUrl): ?>
-            <img src="<?= $avatarUrl ?>" alt="">
-          <?php else: ?>
-            <div class="profile-placeholder"><?= strtoupper($user['username'][0]) ?></div>
-          <?php endif; ?>
-        </div>
-        <div>
-          <h1><?= htmlspecialchars($user['username']) ?></h1>
-          <?php if ($isOwn): ?>
-            <p class="meta" style="margin-top:2px">This is you.</p>
-          <?php endif; ?>
-        </div>
+  <div class="content" style="max-width:500px">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <?php if ($avatarUrl): ?>
+          <img src="<?= $avatarUrl ?>" alt="Avatar">
+        <?php else: ?>
+          <div class="avatar-placeholder"><?= strtoupper($user['username'][0]) ?></div>
+        <?php endif; ?>
       </div>
-
-      <?php if ($isOwn && $uploadError): ?>
-        <p class="error"><?= htmlspecialchars($uploadError) ?></p>
-      <?php endif; ?>
-
-      <?php if ($isOwn): ?>
-      <form method="post" class="avatar-form" enctype="multipart/form-data">
-        <label class="file-label">Change avatar: <input type="file" name="avatar" accept="image/*" required></label>
-        <button type="submit">Upload</button>
-      </form>
-      <?php endif; ?>
-
-      <table class="profile-table">
-        <tr><td>Member since</td><td><?= formatDate($user['created_at']) ?></td></tr>
-        <tr><td>Topics created</td><td><?= $topicCount ?></td></tr>
-        <tr><td>Replies posted</td><td><?= $replyCount ?></td></tr>
-        <tr><td>Science posts</td><td><?= $scienceCount ?></td></tr>
-        <tr><td>Announcement replies</td><td><?= $announceReplyCount ?></td></tr>
-      </table>
+      <div class="profile-info">
+        <h1><?= htmlspecialchars($user['username']) ?></h1>
+        <?php if ($isOwn): ?>
+          <p class="meta" style="margin-bottom:4px">This is you.</p>
+        <?php endif; ?>
+      </div>
     </div>
+
+    <?php if ($isOwn && $uploadError): ?>
+      <p class="error"><?= htmlspecialchars($uploadError) ?></p>
+    <?php endif; ?>
+
+    <?php if ($isOwn): ?>
+    <form method="post" class="avatar-form" enctype="multipart/form-data">
+      <label class="file-label">Change avatar: <input type="file" name="avatar" accept="image/*" required></label>
+      <button type="submit">Upload</button>
+    </form>
+    <?php endif; ?>
+
+    <table class="profile-table">
+      <tr><td>Member since</td><td><?= formatDate($user['created_at']) ?></td></tr>
+      <tr><td>Topics created</td><td><?= $topicCount ?></td></tr>
+      <tr><td>Replies posted</td><td><?= $replyCount ?></td></tr>
+      <tr><td>Science posts</td><td><?= $scienceCount ?></td></tr>
+      <tr><td>Announcement replies</td><td><?= $announceReplyCount ?></td></tr>
+    </table>
   </div>
 </body>
 </html>

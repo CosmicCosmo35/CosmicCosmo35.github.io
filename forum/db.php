@@ -151,17 +151,6 @@ function getAvatar($userId) {
   return false;
 }
 
-function getUserStats($userId) {
-  global $db;
-  $user = $db->querySingle("SELECT id, username, created_at FROM users WHERE id = " . (int)$userId, true);
-  if (!$user) return null;
-  $topics = $db->querySingle("SELECT COUNT(*) FROM topics WHERE user_id = " . (int)$userId);
-  $replies = $db->querySingle("SELECT COUNT(*) FROM replies WHERE user_id = " . (int)$userId);
-  $user['topics'] = $topics;
-  $user['replies'] = $replies;
-  return $user;
-}
-
 function ensureDirs() {
   foreach ([UPLOAD_DIR, AVATAR_DIR, PROJECT_DIR] as $dir) {
     if (!is_dir($dir)) mkdir($dir, 0755, true);
