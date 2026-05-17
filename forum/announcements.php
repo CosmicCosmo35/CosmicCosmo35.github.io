@@ -25,31 +25,30 @@
   </div>
 
   <div class="content">
-    <div class="page-head">
+    <div class="page-actions">
       <h1>Announcements</h1>
       <?php if (isAdmin()): ?>
         <a href="post_announcement.php" class="btn">+ New Announcement</a>
       <?php endif; ?>
     </div>
 
-    <?php
-    $result = $db->query("SELECT a.*, (SELECT COUNT(*) FROM announcement_replies WHERE announcement_id = a.id) AS reply_count FROM announcements a ORDER BY a.created_at DESC");
-    if ($result->numColumns() === 0) { echo '<p>No announcements yet.</p>'; }
-    else {
+    <div class="announcement-list">
+      <?php
+      $result = $db->query("SELECT a.*, (SELECT COUNT(*) FROM announcement_replies WHERE announcement_id = a.id) AS reply_count FROM announcements a ORDER BY a.created_at DESC");
       $hasAny = false;
       while ($row = $result->fetchArray(SQLITE3_ASSOC)):
         $hasAny = true;
-    ?>
-    <div class="announcement-preview">
-      <h2><a href="announcement.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
-      <p class="meta">by <?= authorLink($row['author'], $row['user_id']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?> replies</p>
-      <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 200)) ?></div>
+      ?>
+      <div class="announcement-item">
+        <h2><a href="announcement.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
+        <p class="meta">by <?= authorLink($row['author'], $row['user_id']) ?> &middot; <?= formatDate($row['created_at']) ?> &middot; <?= $row['reply_count'] ?> replies</p>
+        <div class="preview-body"><?= renderMarkdown(mb_substr($row['body'], 0, 250)) ?></div>
+      </div>
+      <?php endwhile; ?>
+      <?php if (!$hasAny): ?>
+      <div class="announcement-item"><p>No announcements yet.</p></div>
+      <?php endif; ?>
     </div>
-    <?php
-      endwhile;
-      if (!$hasAny) echo '<p>No announcements yet.</p>';
-    }
-    ?>
   </div>
 </body>
 </html>

@@ -25,7 +25,7 @@
   </div>
 
   <div class="content">
-    <div class="page-head">
+    <div class="page-actions">
       <h1>Forum</h1>
       <?php if (isLoggedIn()): ?>
         <a href="post.php" class="btn">+ New Topic</a>
@@ -34,26 +34,36 @@
       <?php endif; ?>
     </div>
 
-    <?php
-    $result = $db->query("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t ORDER BY t.created_at DESC");
-    $hasAny = false;
-    while ($row = $result->fetchArray(SQLITE3_ASSOC)):
-      $hasAny = true;
-    ?>
-    <div class="topic-card">
-      <div class="topic-card-main">
-        <h2><a href="topic.php?id=<?= $row['id'] ?>"><?= htmlspecialchars($row['title']) ?></a></h2>
-        <div class="topic-card-meta">
-          <span>by <?= authorLink($row['author'], $row['user_id']) ?></span>
-          <span><?= $row['reply_count'] ?> reply<?= $row['reply_count'] !== 1 ? 's' : '' ?></span>
-          <span><?= formatDate($row['created_at']) ?></span>
-        </div>
-      </div>
-    </div>
-    <?php endwhile; ?>
-    <?php if (!$hasAny): ?>
-    <p class="empty-state">No topics yet. Be the first to post!</p>
-    <?php endif; ?>
+    <table class="forum-table">
+      <thead>
+        <tr>
+          <th class="col-topic">Topic</th>
+          <th class="col-author">Author</th>
+          <th class="col-replies">Replies</th>
+          <th class="col-last">Last Post</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+        $result = $db->query("SELECT t.*, (SELECT COUNT(*) FROM replies WHERE topic_id = t.id) AS reply_count FROM topics t ORDER BY t.created_at DESC");
+        $hasAny = false;
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)):
+          $hasAny = true;
+        ?>
+        <tr>
+          <td class="col-topic">
+            <a href="topic.php?id=<?= $row['id'] ?>" class="topic-title"><?= htmlspecialchars($row['title']) ?></a>
+          </td>
+          <td class="col-author"><?= authorLink($row['author'], $row['user_id']) ?></td>
+          <td class="col-replies"><?= $row['reply_count'] ?></td>
+          <td class="col-last"><?= formatDate($row['created_at']) ?></td>
+        </tr>
+        <?php endwhile; ?>
+        <?php if (!$hasAny): ?>
+        <tr><td colspan="4" class="empty-row">No topics yet. Be the first to post!</td></tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
   </div>
 </body>
 </html>
